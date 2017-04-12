@@ -1,7 +1,12 @@
 <template>
   <div>
     <div id="jsmind_container"></div>
-    <ul id=contextMenu><li>Test</li></ul>
+    <ul id=contextMenu v-if="isTeacher">
+      <li v-for="option in teacherList">{{option}}</li>
+    </ul>
+    <ul id=contextMenu v-else>
+      <li v-for="option in studentList">{{option}}</li>
+    </ul>
   </div>
 </template>
 
@@ -14,10 +19,16 @@
 
 //  import _ from 'lodash'
 
+  var teacherList = ['teacher1', 'teacher2']
+  var studentList = ['student1', 'student2', 'student3']
+
   export default {
     name: 'mind-map',
     data () {
       return {
+        isTeacher: true,
+        teacherList: teacherList,
+        studentList: studentList,
         jm: null
       }
     },
