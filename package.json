@@ -15,10 +15,12 @@
   "dependencies": {
     "element-ui": "^1.2.9",
     "express": "^4.15.2",
+    "lodash": "^4.17.4",
+    "moment": "^2.18.1",
     "socket.io": "^1.7.3",
     "vue": "^2.2.2",
     "vue-router": "^2.3.0",
-    "vue-socket.io": "^2.1.1-a"
+    "vuex": "^2.3.1"
   },
   "devDependencies": {
     "autoprefixer": "^6.7.2",
