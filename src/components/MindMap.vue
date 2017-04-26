@@ -4,8 +4,11 @@
       <el-col :span="3">
         <sidebar></sidebar>
       </el-col>
-      <el-col :span="21">
+      <el-col :span="18">
         <div id="jsmind_container"></div>
+      </el-col>
+      <el-col :span="3">
+        <barrage></barrage>
       </el-col>
     </el-row>
   </div>
@@ -19,6 +22,7 @@
   import jsMindDraggable from './MindMap/jsmind/js/jsmind.draggable.js'
 
   import Sidebar from './Sidebar.vue'
+  import Barrage from './Barrage.vue'
 
 //  import _ from 'lodash'
 
@@ -28,7 +32,8 @@
   export default {
     name: 'mind-map',
     components: {
-      Sidebar
+      Sidebar,
+      Barrage
     },
     data () {
       return {
