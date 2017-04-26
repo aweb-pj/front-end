@@ -1,7 +1,13 @@
 <template>
   <div>
-    <div id="jsmind_container"></div>
-    <ul id=contextMenu><li>Test</li></ul>
+    <el-row class="tac">
+      <el-col :span="3">
+        <sidebar></sidebar>
+      </el-col>
+      <el-col :span="21">
+        <div id="jsmind_container"></div>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
@@ -12,12 +18,24 @@
   import jsMind from './MindMap/jsmind/js/jsmind.js'
   import jsMindDraggable from './MindMap/jsmind/js/jsmind.draggable.js'
 
+  import Sidebar from './Sidebar.vue'
+
 //  import _ from 'lodash'
+
+  let teacherList = ['teacher1', 'teacher2']
+  let studentList = ['student1', 'student2', 'student3']
 
   export default {
     name: 'mind-map',
+    components: {
+      Sidebar
+    },
     data () {
       return {
+        sidebarShow: true,
+        isTeacher: true,
+        teacherList: teacherList,
+        studentList: studentList,
         jm: null
       }
     },
@@ -87,7 +105,8 @@
       $menu.on('click', 'li', function (e) {
         // hide the context menu
         $menu.hide()
-        alert('Context selection: ' + $(this).text())
+        console.log('Context selection: ' + $(this).text())
+        that.sidebarShow = !that.sidebarShow
       })
     }
   }
