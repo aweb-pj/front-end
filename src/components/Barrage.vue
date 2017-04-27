@@ -1,7 +1,7 @@
 <template>
   <div id="barrage_wrapper">
     <ul id="messages">
-      <li v-for="message in message_history">{{ message.content }}</li>
+      <li v-for="message in message_history" v-bind:style="{backgroundColor: message.bg_color}" @click="clickPlusOne(message.id)">{{ message.content }}</li>
     </ul>
     <form action="">
       <textarea v-model="message_content" @keydown.enter="send" @keyup.enter="clear" name="message-to-send" id="message-to-send" placeholder ="输入弹幕" rows="3"></textarea>
@@ -41,6 +41,10 @@
           this.$store.dispatch('send_message', this.message_content)
           this.message_content = ''
         }
+      },
+
+      clickPlusOne (id) {
+        this.$store.dispatch('click_plus', id)
       }
     },
     mounted () {
