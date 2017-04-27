@@ -56,7 +56,7 @@ const mutations = {
 const actions = {
   connect ({commit, state}) {
     if (state.connection_status === false) {
-      socket = io('http://localhost:3000')
+      socket = io('barrage.jtwang.me')
       socket.on('connect', () => {
         commit('CHANGE_CONNECTION_STATUS', true)
       })
