@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import Vue from 'vue'
 import Vuex from 'vuex'
-import moment from 'moment'
+// import moment from 'moment'
 // import _ from 'lodash'
 
 import io from 'socket.io-client'
@@ -50,6 +50,12 @@ const mutations = {
 
   PUT_MESSAGE (state, message) {
     state.message_history.unshift(message)
+  },
+
+  CLICK_PLUS_ONE (state, id) {
+    let index = state.message_history.length - 1 - id
+    let click = 255 - 2 * (++state.message_history[index].clicks < 200 ? state.message_history[index].clicks : 200)
+    state.message_history[index].bg_color = 'rgb(' + click + ',' + click + ',' + click + ')'
   }
 }
 
@@ -99,10 +105,15 @@ const actions = {
   },
 
   send_message ({commit, state}, content) {
-    let time = moment().calendar()
-    let complete_message = {sender: state.username, content: content, time: time}
+    // let time = moment().calendar()
+    let index = state.message_history.length
+    let complete_message = {id: index, content: content, clicks: 0, bg_color: 'rgb(255,255,255)'}
     socket.emit('client_message', complete_message)
     commit('PUT_MESSAGE', complete_message)
+  },
+
+  click_plus ({commit, state}, id) {
+    commit('CLICK_PLUS_ONE', id)
   }
 }
 
