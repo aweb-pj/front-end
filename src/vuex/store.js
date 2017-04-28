@@ -49,7 +49,8 @@ const mutations = {
   },
 
   PUT_MESSAGE (state, message) {
-    state.message_history.unshift(message)
+    // state.message_history.unshift(message)
+    state.message_history[message.id] = message
   },
 
   CLICK_PLUS_ONE (state, id) {
@@ -106,10 +107,8 @@ const actions = {
 
   send_message ({commit, state}, content) {
     // let time = moment().calendar()
-    let index = state.message_history.length
-    let complete_message = {id: index, content: content, clicks: 0, bg_color: 'rgb(255,255,255)'}
-    socket.emit('client_message', complete_message)
-    commit('PUT_MESSAGE', complete_message)
+    socket.emit('client_message', content)
+    // commit('PUT_MESSAGE', client_message)
   },
 
   click_plus ({commit, state}, id) {
