@@ -5,7 +5,13 @@
         <sidebar></sidebar>
       </el-col>
       <el-col :span="18">
-        <div id="jsmind_container"></div>
+        <el-tabs  v-model="selectedTab" type="card">
+          <el-tab-pane :label="tabs[0].title" :name="tabs[0].name">
+            <div id="jsmind_container"></div>
+          </el-tab-pane>
+          <el-tab-pane :label="tabs[1].title" :name="tabs[1].name"></el-tab-pane>
+          <el-tab-pane :label="tabs[2].title" :name="tabs[2].name"></el-tab-pane>
+        </el-tabs>
       </el-col>
       <el-col :span="3">
         <barrage></barrage>
@@ -26,9 +32,6 @@
 
 //  import _ from 'lodash'
 
-  let teacherList = ['teacher1', 'teacher2']
-  let studentList = ['student1', 'student2', 'student3']
-
   export default {
     name: 'mind-map',
     components: {
@@ -37,11 +40,13 @@
     },
     data () {
       return {
-        sidebarShow: true,
-        isTeacher: true,
-        teacherList: teacherList,
-        studentList: studentList,
-        jm: null
+        jm: null,
+        selectedTab: '1',
+        tabs: [
+          { title: '思维导图', name: '1' },
+          { title: '作业', name: '2' },
+          { title: '课件', name: '3' }
+        ]
       }
     },
     mounted () {
@@ -106,13 +111,12 @@
       that.jm = new jsMind(options)
       that.jm.show(mind)
       /* below are the canvas contextmenu configuration */
-      let $menu = $('#contextMenu')
-      $menu.on('click', 'li', function (e) {
-        // hide the context menu
-        $menu.hide()
-        console.log('Context selection: ' + $(this).text())
-        that.sidebarShow = !that.sidebarShow
-      })
+//      let $menu = $('#contextMenu')
+//      $menu.on('click', 'li', function (e) {
+//        // hide the context menu
+//        $menu.hide()
+//        console.log('Context selection: ' + $(this).text())
+//      })
     }
   }
 
