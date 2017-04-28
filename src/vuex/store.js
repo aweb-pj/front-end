@@ -12,6 +12,8 @@ const LOGIN = 'LOGIN'
 const LOGIN_SUCCESS = 'LOGIN_SUCCESS'
 const LOGOUT = 'LOGOUT'
 
+let BARRAGE_SERVER_ADDR = (process.env.NODE_ENV === 'production') ? 'barrage.jtwang.me' : 'localhost:3000'
+
 let socket = null
 
 const state = {
@@ -53,7 +55,7 @@ const mutations = {
   },
 
   CLICK_PLUS_ONE (state, id) {
-    let index = _.findIndex(state.message_history, function(message) { return message.id == id; });
+    let index = _.findIndex(state.message_history, function (message) { return message.id === id })
     let click = 255 - 2 * (++state.message_history[index].clicks < 200 ? state.message_history[index].clicks : 200)
     state.message_history[index].bg_color = 'rgb(' + click + ',' + click + ',' + click + ')'
   }
@@ -62,7 +64,7 @@ const mutations = {
 const actions = {
   connect ({commit, state}) {
     if (state.connection_status === false) {
-      socket = io('barrage.jtwang.me')
+      socket = io(BARRAGE_SERVER_ADDR)
       socket.on('connect', () => {
         commit('CHANGE_CONNECTION_STATUS', true)
       })
