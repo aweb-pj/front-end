@@ -7,7 +7,7 @@
       <el-col :span="18">
         <el-tabs  v-model="selectedTab" type="card">
           <el-tab-pane :label="tabs[0].title" :name="tabs[0].name">
-            <div id="jsmind_container"></div>
+            <div class="tabContent" id="jsmind_container"></div>
           </el-tab-pane>
           <el-tab-pane :label="tabs[1].title" :name="tabs[1].name"></el-tab-pane>
           <el-tab-pane :label="tabs[2].title" :name="tabs[2].name"></el-tab-pane>
@@ -122,11 +122,14 @@
 
 </script>
 <style>
-  #contextMenu{position:absolute;}
+  /*#contextMenu{position:absolute;}
   #contextMenu{
     border:1px solid green;
     background:white;
     list-style:none;
     padding:3px;
+  }*/
+  .tabContent {
+    max-height: 92%;
   }
 </style>
