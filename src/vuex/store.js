@@ -2,7 +2,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 // import moment from 'moment'
-// import _ from 'lodash'
+import _ from 'lodash'
 
 import io from 'socket.io-client'
 
@@ -49,12 +49,11 @@ const mutations = {
   },
 
   PUT_MESSAGE (state, message) {
-    // state.message_history.unshift(message)
-    state.message_history[message.id] = message
+    state.message_history.unshift(message)
   },
 
   CLICK_PLUS_ONE (state, id) {
-    let index = state.message_history.length - 1 - id
+    let index = _.findIndex(state.message_history, function(message) { return message.id == id; });
     let click = 255 - 2 * (++state.message_history[index].clicks < 200 ? state.message_history[index].clicks : 200)
     state.message_history[index].bg_color = 'rgb(' + click + ',' + click + ',' + click + ')'
   }
@@ -81,6 +80,9 @@ const actions = {
     socket.on('server_message', (message) => {
       commit('PUT_MESSAGE', message)
     })
+    socket.on('server_click', (id) => {
+      commit('CLICK_PLUS_ONE', id)
+    })
     // socket.on('update_contacts', (people) => {
     //   console.log('HERE!!!!!!!!')
     //   commit('CLEAR_CONTACTS')
@@ -105,13 +107,13 @@ const actions = {
     commit(LOGOUT)
   },
 
-  send_message ({commit, state}, content) {
+  send_message ({commit}, content) {
     // let time = moment().calendar()
     socket.emit('client_message', content)
-    // commit('PUT_MESSAGE', client_message)
   },
 
-  click_plus ({commit, state}, id) {
+  click_plus ({commit}, id) {
+    socket.emit('client_click', id)
     commit('CLICK_PLUS_ONE', id)
   }
 }
