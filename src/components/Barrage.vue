@@ -48,7 +48,7 @@
       }
     },
     mounted () {
-      this.$store.dispatch('connect')
+      // this.$store.dispatch('connect')
     }
   }
 </script>
