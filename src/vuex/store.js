@@ -129,13 +129,12 @@ const actions = {
     commit('CLICK_PLUS_ONE', id)
   },
 
-  get_exercises ({commit}, id) {
+  async get_exercises ({commit}, id) {
     console.log(id)
     try {
-      Vue.http.get('http://jtwang.me/files/homework.json').then((response) => {
-        let exercises = response.body.data
-        commit('PUT_EXERCISES', exercises)
-      })
+      let response = await Vue.http.get('http://jtwang.me/files/homework.json')
+      let exercises = response.body.data
+      commit('PUT_EXERCISES', exercises)
     } catch (error) {
       console.log(error)
     }

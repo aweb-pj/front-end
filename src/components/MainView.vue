@@ -58,7 +58,7 @@
     methods: {
       async test_click (tab) {
         if (tab.index === '1') {
-          this.$store.dispatch('get_exercises', 0)
+          await this.$store.dispatch('get_exercises', 0)
         }
       }
     }
