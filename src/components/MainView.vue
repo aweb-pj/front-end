@@ -13,12 +13,7 @@
           </el-tab-pane>
           <el-tab-pane :label="tabs[1].title" :name="tabs[1].name" >
             <div class="tabContent">
-<!--               <ol>
-                <li>1</li>
-                <li>2</li>
-                <li>3</li>
-              </ol> -->
-              <pre id="json_dispaly">{{ json_str }}</pre>
+              <homework></homework>
             </div>
           </el-tab-pane>
           <el-tab-pane :label="tabs[2].title" :name="tabs[2].name">
@@ -39,13 +34,15 @@
   import Sidebar from './Sidebar.vue'
   import MindMap from './MindMap.vue'
   import Barrage from './Barrage.vue'
+  import Homework from './Homework.vue'
 
   export default {
     name: 'main-view',
     components: {
       Sidebar,
       MindMap,
-      Barrage
+      Barrage,
+      Homework
     },
     data () {
       return {
@@ -55,23 +52,13 @@
           { title: '思维导图', name: '1' },
           { title: '作业', name: '2' },
           { title: '课件', name: '3' }
-        ],
-        json_str: ''
+        ]
       }
     },
     methods: {
       async test_click (tab) {
-        console.log(tab.label, typeof tab.index)
         if (tab.index === '1') {
-          try {
-            let response = await this.$http.get('http://jtwang.me/files/school_bus.json')
-            console.log(response.body)
-            // get body data
-            this.json_str = JSON.stringify(response.body, undefined, 2)
-          } catch (error) {
-              // error callback
-            console.log(error)
-          }
+          this.$store.dispatch('get_exercises', 0)
         }
       }
     }

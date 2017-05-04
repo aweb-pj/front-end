@@ -24,7 +24,8 @@ const state = {
   login_pending: false,
   token: '',
   account: '',
-  message_history: []
+  message_history: [],
+  exercises: []
 }
 
 const mutations = {
@@ -58,6 +59,15 @@ const mutations = {
     let index = _.findIndex(state.message_history, function (message) { return message.id === id })
     let click = 255 - 2 * (++state.message_history[index].clicks < 200 ? state.message_history[index].clicks : 200)
     state.message_history[index].bg_color = 'rgb(' + click + ',' + click + ',' + click + ')'
+  },
+
+  PUT_EXERCISES (state, exercises) {
+    while (state.exercises.length !== 0) {
+      state.exercises.pop()
+    }
+    _.forEach(exercises, function (exercise) {
+      state.exercises.push(exercise)
+    })
   }
 }
 
@@ -117,6 +127,18 @@ const actions = {
   click_plus ({commit}, id) {
     socket.emit('client_click', id)
     commit('CLICK_PLUS_ONE', id)
+  },
+
+  get_exercises ({commit}, id) {
+    console.log(id)
+    try {
+      Vue.http.get('http://jtwang.me/files/homework.json').then((response) => {
+        let exercises = response.body.data
+        commit('PUT_EXERCISES', exercises)
+      })
+    } catch (error) {
+      console.log(error)
+    }
   }
 }
 
@@ -139,6 +161,9 @@ export default new Vuex.Store({
     },
     message_history () {
       return state.message_history
+    },
+    exercises () {
+      return state.exercises
     }
   },
 
