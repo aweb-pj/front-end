@@ -17,7 +17,9 @@
             </div>
           </el-tab-pane>
           <el-tab-pane :label="tabs[2].title" :name="tabs[2].name">
-            <div class="tabContent"></div>
+            <div class="tabContent">
+              <material></material>
+            </div>
           </el-tab-pane>
         </el-tabs>
       </el-col>
@@ -35,6 +37,7 @@
   import MindMap from './MindMap.vue'
   import Barrage from './Barrage.vue'
   import Homework from './Homework.vue'
+  import Material from './Material.vue'
 
   export default {
     name: 'main-view',
@@ -42,7 +45,8 @@
       Sidebar,
       MindMap,
       Barrage,
-      Homework
+      Homework,
+      Material
     },
     data () {
       return {
