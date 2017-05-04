@@ -4,7 +4,7 @@
       <template slot="title"><i class="el-icon-message"></i>导航一</template>
       <el-menu-item-group>
         <template slot="title">分组一</template>
-        <el-menu-item index="1-1">选项1</el-menu-item>
+        <el-menu-item index="1-1" @click="save_mindmap">保存思维导图</el-menu-item>
         <el-menu-item index="1-2">选项2</el-menu-item>
       </el-menu-item-group>
       <el-menu-item-group title="分组2">
@@ -22,7 +22,13 @@
 
 <script>
   export default {
-    name: 'sidebar'
+    name: 'sidebar',
+
+    methods: {
+      async save_mindmap () {
+        console.log(this.$cosmos.jm.get_data())
+      }
+    }
   }
 </script>
 <style>

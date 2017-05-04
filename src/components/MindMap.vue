@@ -33,7 +33,6 @@
 
 <script>
   /* eslint-disable new-cap */
-
   import './MindMap/jsmind/style/jsmind.css'
   import jsMind from './MindMap/jsmind/js/jsmind.js'
   import jsMindDraggable from './MindMap/jsmind/js/jsmind.draggable.js'
@@ -51,7 +50,7 @@
     },
     data () {
       return {
-        jm: null,
+//        jm: null,
         selectedTab: '1',
         tabs: [
           { title: '思维导图', name: '1' },
@@ -137,8 +136,8 @@
       }
 
       let that = this
-      that.jm = new jsMind(options)
-      that.jm.show(mind)
+      that.$cosmos.jm = new jsMind(options)
+      that.$cosmos.jm.show(mind)
       /* below are the canvas contextmenu configuration */
 //      let $menu = $('#contextMenu')
 //      $menu.on('click', 'li', function (e) {
