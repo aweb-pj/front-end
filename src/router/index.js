@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Hello from '@/components/Hello'
-import MindMap from '@/components/MindMap'
+import MainView from '@/components/MainView'
 
 Vue.use(Router)
 
@@ -14,8 +14,8 @@ export default new Router({
     },
     {
       path: '/mindmap',
-      name: 'MindMap',
-      component: MindMap
+      name: 'MainView',
+      component: MainView
     }
   ]
 })
