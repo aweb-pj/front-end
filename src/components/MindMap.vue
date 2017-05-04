@@ -62,17 +62,18 @@
       }
     },
     methods: {
-      test_click (tab) {
+      async test_click (tab) {
         console.log(tab.label, typeof tab.index)
         if (tab.index === '1') {
-          this.$http.get('http://jtwang.me/files/school_bus.json').then(response => {
-            alert(response.body)
-    // get body data
+          try {
+            let response = await this.$http.get('http://jtwang.me/files/school_bus.json')
+            console.log(response.body)
+            // get body data
             this.json_str = JSON.stringify(response.body, undefined, 2)
-          }, error => {
-    // error callback
+          } catch (error) {
+              // error callback
             console.log(error)
-          })
+          }
         }
       }
     },
