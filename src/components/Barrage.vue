@@ -25,6 +25,10 @@
       ])
     },
 
+    mounted () {
+      this.$store.dispatch('connect')
+    },
+
     methods: {
       clear () {
         if (this.message_content.trim() === '') {
@@ -46,9 +50,6 @@
       clickPlusOne (id) {
         this.$store.dispatch('click_plus', id)
       }
-    },
-    mounted () {
-      // this.$store.dispatch('connect')
     }
   }
 </script>
