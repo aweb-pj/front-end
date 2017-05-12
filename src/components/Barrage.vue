@@ -26,7 +26,8 @@
     },
 
     mounted () {
-      this.$store.dispatch('connect')
+      //TODO: should add it back in production
+      // this.$store.dispatch('connect')
     },
 
     methods: {
