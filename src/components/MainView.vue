@@ -23,7 +23,7 @@
           </el-tab-pane>
         </el-tabs>
       </el-col>
-      <el-col :span="3">
+      <el-col class="barrage" :span="3">
         <barrage></barrage>
       </el-col>
     </el-row>
@@ -79,5 +79,9 @@
   }*/
   .tabContent {
     max-height: 92%;
+  }
+  .barrage {
+    min-height: 100%;
+    border-left: 1px solid rgb(209,219,229);
   }
 </style>
