@@ -21,7 +21,7 @@ const LOGOUT = 'LOGOUT'
 // }
 // =======
 // let BARRAGE_SERVER_ADDR = 'http://' + (process.env.NODE_ENV === 'production') ? 'barrage.jtwang.me' : 'localhost:3000'
-let BARRAGE_SERVER_ADDR = 'http://barrage.jtwang.me'
+let BARRAGE_SERVER_ADDR = 'https://barrage.jtwang.me'
 
 let socket = null
 
@@ -139,9 +139,9 @@ const actions = {
   },
 
   async get_exercises ({commit}, id) {
-    console.log(id)
+    // console.log(id)
     try {
-      let response = await Vue.http.get('http://jtwang.me/files/homework.json')
+      let response = await Vue.http.get('https://file.jtwang.me/homework.json')
       let exercises = response.body.data
       commit('PUT_EXERCISES', exercises)
     } catch (error) {
