@@ -68,7 +68,7 @@
   }
 
 </script>
-<style>
+<style scoped>
   /*#contextMenu{position:absolute;}
   #contextMenu{
     border:1px solid green;

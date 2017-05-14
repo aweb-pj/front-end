@@ -49,7 +49,7 @@
     }
   }
 </script>
-<style>
+<style scoped>
   .sidebar {
     min-height: 100%;
   }

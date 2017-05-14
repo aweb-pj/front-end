@@ -34,7 +34,7 @@
     }
   }
 </script>
-<style>
+<style scoped>
   div.card {
     width: 90%;
     margin-left: 5%;

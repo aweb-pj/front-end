@@ -18,7 +18,7 @@
   <!--TODO: Below is the problematic part-->
   <el-button type="text" @click="dialogFormVisible = true">打开嵌套表单的 Dialog</el-button>
 
-  <el-dialog title="收货地址" :visible.sync="dialogFormVisible">
+  <el-dialog title="收货地址" v-model="dialogFormVisible">
     <el-form :model="form">
       <el-form-item label="活动名称" :label-width="formLabelWidth">
         <el-input v-model="form.name" auto-complete="off"></el-input>
@@ -45,7 +45,6 @@
     data () {
       return {
         file_server_addr: '',
-        dialogTableVisible: false,
         dialogFormVisible: false,
         form: {
           name: '',
