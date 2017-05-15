@@ -34,7 +34,8 @@ const state = {
   token: '',
   account: '',
   message_history: [],
-  exercises: []
+  exercises: [],
+  menu_index: 0
 }
 
 const mutations = {
@@ -77,6 +78,10 @@ const mutations = {
     _.forEach(exercises, function (exercise) {
       state.exercises.push(exercise)
     })
+  },
+
+  CHANGE_MENU_INDEX (state, index) {
+    state.menu_index = index
   }
 }
 
@@ -147,6 +152,10 @@ const actions = {
     } catch (error) {
       console.log(error)
     }
+  },
+
+  change_menu ({commit}, index) {
+    commit('CHANGE_MENU_INDEX', index)
   }
 }
 
@@ -172,6 +181,9 @@ export default new Vuex.Store({
     },
     exercises () {
       return state.exercises
+    },
+    menu_index () {
+      return state.menu_index
     }
   },
 

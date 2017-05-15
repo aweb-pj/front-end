@@ -5,7 +5,7 @@
         <sidebar></sidebar>
       </el-col>
       <el-col :span="18">
-        <el-tabs  v-model="selectedTab" type="card" @tab-click="test_click">
+        <el-tabs  v-model="selectedTab" type="card" @tab-click="click_tab">
           <el-tab-pane :label="tabs[0].title" :name="tabs[0].name">
             <div class="tabContent">
               <mind-map></mind-map>
@@ -59,8 +59,10 @@
       }
     },
     methods: {
-      async test_click (tab) {
-        if (tab.index === '1') {
+      async click_tab (tab) {
+        let index = tab.index
+        this.$store.dispatch('change_menu', index)
+        if (index === '1') {
           await this.$store.dispatch('get_exercises', 0)
         }
       }
