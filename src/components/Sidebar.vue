@@ -24,9 +24,9 @@
         <el-submenu index="1" >
           <template slot="title"><i class="el-icon-menu"></i>导航二</template>
           <el-menu-item-group>
-            <template slot="title">分组一</template>
-            <el-menu-item index="1-1" @click="">新增题目</el-menu-item>
-            <el-menu-item index="1-2">删除题目</el-menu-item>
+            <template slot="title">新增题目</template>
+            <el-menu-item index="1-1" @click="choiceVisible = true">选择题</el-menu-item>
+            <el-menu-item index="1-2" @click="shortAnswerVisible = true">简答题</el-menu-item>
           </el-menu-item-group>
         </el-submenu>
       </el-menu>
@@ -38,6 +38,50 @@
         </el-submenu>
       </el-menu>
     </div>
+
+    <el-dialog title="新增选择题" v-model="choiceVisible">
+      <el-form ref="form" :model="choiceForm" label-width="80px">
+        <el-form-item label="问题标题">
+          <el-input v-model="choiceForm.name"></el-input>
+        </el-form-item>
+        <el-form-item label="选项A">
+          <el-input v-model="choiceForm.choice1"></el-input>
+        </el-form-item>
+        <el-form-item label="选项B">
+          <el-input v-model="choiceForm.choice2"></el-input>
+        </el-form-item>
+        <el-form-item label="选项C">
+          <el-input v-model="choiceForm.choice3"></el-input>
+        </el-form-item>
+        <el-form-item label="选项D">
+          <el-input v-model="choiceForm.choice4"></el-input>
+        </el-form-item>
+        <el-form-item label="答案">
+          <el-checkbox-group v-model="choiceForm.answer">
+            <el-checkbox label="A" name="answer"></el-checkbox>
+            <el-checkbox label="B" name="answer"></el-checkbox>
+            <el-checkbox label="C" name="answer"></el-checkbox>
+            <el-checkbox label="D" name="answer"></el-checkbox>
+          </el-checkbox-group>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="choiceVisible = false">取 消</el-button>
+        <el-button type="primary" @click="choiceVisible = false">确 定</el-button>
+      </div>
+    </el-dialog>
+
+    <el-dialog title="新增简答题" v-model="shortAnswerVisible">
+      <el-form ref="form" :model="shortAnswerForm" label-width="80px">
+        <el-form-item label="问题标题">
+          <el-input v-model="shortAnswerForm.name"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="shortAnswerVisible = false">取 消</el-button>
+        <el-button type="primary" @click="shortAnswerVisible = false">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -48,7 +92,19 @@
     name: 'sidebar',
     data () {
       return {
-        openeds: ['2']
+        choiceVisible: false,
+        choiceForm: {
+          name: '',
+          choice1: '',
+          choice2: '',
+          choice3: '',
+          choice4: '',
+          answer: []
+        },
+        shortAnswerVisible: false,
+        shortAnswerForm: {
+          name: ''
+        }
       }
     },
     computed: {
