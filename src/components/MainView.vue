@@ -80,7 +80,8 @@
     max-height: 92%;
   }
   .barrage {
-    min-height: 100%;
+    height: 100%;
     border-left: 1px solid rgb(209,219,229);
+    overflow: auto;
   }
 </style>
