@@ -1,5 +1,64 @@
 <template>
-  <div id="jsmind_container"></div>
+  <div>
+    <el-row :gutter="20">
+      <el-col :span="3">
+        <div>
+          <el-dropdown>
+            <el-button>
+              新增结点<i class="el-icon-caret-bottom el-icon--right"></i>
+            </el-button>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item><a @click="openForm(0)">新增前结点</a></el-dropdown-item>
+              <el-dropdown-item><a @click="openForm(1)">新增后结点</a></el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </div>
+      </el-col>
+      <el-col :span="2"><div><el-button @click="deleteNode">删除</el-button></div></el-col>
+      <el-col :span="3">
+        <div>
+          <el-dropdown>
+            <el-button>
+              修改颜色<i class="el-icon-caret-bottom el-icon--right"></i>
+            </el-button>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item><a @click="openColor(0)">修改背景色</a></el-dropdown-item>
+              <el-dropdown-item><a @click="openColor(1)">修改前景色</a></el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </div>
+      </el-col>
+    </el-row>
+
+    <div id="jsmind_container"></div>
+
+    <el-dialog title="新增结点" v-model="formVisible">
+      <el-form ref="form" :model="form" label-width="80px">
+        <el-form-item label="结点id">
+          <el-input v-model="form.id"></el-input>
+        </el-form-item>
+        <el-form-item label="结点名称">
+          <el-input v-model="form.topic"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="formVisible = false">取 消</el-button>
+        <el-button type="primary" @click="createNode">确 定</el-button>
+      </div>
+    </el-dialog>
+
+    <el-dialog title="修改颜色" v-model="colorVisible">
+      <el-form ref="form" :model="form" label-width="80px">
+        <el-form-item label="颜色">
+          <el-input v-model="color"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="colorVisible = false">取 消</el-button>
+        <el-button type="primary" @click="modifyColor">确 定</el-button>
+      </div>
+    </el-dialog>
+  </div>
 </template>
 
 <script>
@@ -10,6 +69,20 @@
 
   export default {
     name: 'mind-map',
+    data () {
+      return {
+        formVisible: false,
+        newNodeType: -1,
+        form: {
+          id: '',
+          topic: '',
+          data: []
+        },
+        colorVisible: false,
+        color: '',
+        colorType: -1
+      }
+    },
     mounted () {
       jsMindDraggable(jsMind)
 
@@ -70,7 +143,45 @@
 
       this.$cosmos.jm = new jsMind(options)
       this.$cosmos.jm.show(mind)
+    },
+    methods: {
+      openForm (type) {
+        this.formVisible = true
+        this.newNodeType = type
+      },
+      createNode () {
+        this.formVisible = false
+        let node = this.$cosmos.jm.mind.selected
+        if (this.newNodeType === 0) {
+          this.$cosmos.jm.insert_node_before(node, this.form.id, this.form.topic, this.form.data)
+        } else if (this.newNodeType === 1) {
+          this.$cosmos.jm.insert_node_after(node, this.form.id, this.form.topic, this.form.data)
+        }
+        this.form.id = ''
+        this.form.topic = ''
+      },
+      deleteNode () {
+        let node = this.$cosmos.jm.mind.selected
+        this.$cosmos.jm.remove_node(node)
+        this.$store.dispatch('delete_node', node.id)
+      },
+      openColor (type) {
+        this.colorVisible = true
+        this.colorType = type
+      },
+      modifyColor () {
+        this.colorVisible = false
+        let node = this.$cosmos.jm.mind.selected
+        if (this.colorType === 0) {
+          this.$cosmos.jm.set_node_color(node.id, this.color, null)
+        } else if (this.colorType === 1) {
+          this.$cosmos.jm.set_node_color(node.id, null, this.color)
+        }
+        this.color = ''
+      }
     }
   }
 
 </script>
+<style scoped>
+</style>

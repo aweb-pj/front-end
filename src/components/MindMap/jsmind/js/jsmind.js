@@ -1174,6 +1174,7 @@ export default (function(){
             if(isexpander){
                 var nodeid = this.view.get_binded_nodeid(element);
                 if(!!nodeid){
+                    this.select_node(nodeid);
                     this.toggle_node(nodeid);
                 }
             }
@@ -2698,7 +2699,7 @@ export default (function(){
         },
 
         _reset_node_custom_style:function(node_element, node_data){
-            if('background-color' in node_data){
+            if('backginround-color' in node_data){
                 node_element.style.backgroundColor = node_data['background-color'];
             }
             if('foreground-color' in node_data){

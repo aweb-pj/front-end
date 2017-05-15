@@ -35,7 +35,8 @@ const state = {
   account: '',
   message_history: [],
   exercises: [],
-  menu_index: 0
+  menu_index: 0,
+  delete_node_id: -1
 }
 
 const mutations = {
@@ -82,6 +83,10 @@ const mutations = {
 
   CHANGE_MENU_INDEX (state, index) {
     state.menu_index = index
+  },
+
+  DELETE_NODE (state, id) {
+    state.delete_node_id = id
   }
 }
 
@@ -156,6 +161,10 @@ const actions = {
 
   change_menu ({commit}, index) {
     commit('CHANGE_MENU_INDEX', index)
+  },
+
+  delete_node ({commit}, id) {
+    commit('DELETE_NODE', id)
   }
 }
 
