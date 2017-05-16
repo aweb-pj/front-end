@@ -73,7 +73,7 @@ export default (function(){
                 addchild   : 45, // Insert
                 addbrother : 13, // Enter
                 editnode   : 113,// F2
-                delnode    : 46, // Delete
+                delnode    : 8, // Delete
                 toggle     : 32, // Space
                 left       : 37, // Left
                 up         : 38, // Up
