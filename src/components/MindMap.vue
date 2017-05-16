@@ -194,9 +194,17 @@
         }
       },
       deleteNode () {
-        let node = this.$cosmos.jm.mind.selected
-        this.$cosmos.jm.remove_node(node)
-        this.$store.dispatch('delete_node', node.id)
+        let selected_node = this.$cosmos.jm.get_selected_node()
+        if (!selected_node) {
+          this.$notify({
+            title: '警告',
+            message: '请先选择一个结点',
+            type: 'error'
+          })
+          return
+        }
+        this.$cosmos.jm.remove_node(selected_node.id)
+        // this.$store.dispatch('delete_node', node.id)
       },
       openColor (type) {
         this.colorVisible = true
@@ -204,7 +212,15 @@
       },
       modifyColor () {
         this.colorVisible = false
-        let node = this.$cosmos.jm.mind.selected
+        let node = this.$cosmos.jm.get_selected_node()
+        if (!node) {
+          this.$notify({
+            title: '警告',
+            message: '请先选择一个结点',
+            type: 'error'
+          })
+          return
+        }
         if (this.colorType === 0) {
           this.$cosmos.jm.set_node_color(node.id, this.color, null)
         } else if (this.colorType === 1) {
