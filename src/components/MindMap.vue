@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-row :gutter="20">
+    <el-row :gutter="20" v-if="selectedNodeId !== null">
       <el-col :span="3">
         <div>
           <el-dropdown @command="handleAddNodeDropdown">
@@ -71,6 +71,7 @@
     name: 'mind-map',
     data () {
       return {
+        selectedNodeId: null,
         formVisible: false,
         newNodeType: -1,
         form: {
@@ -83,6 +84,7 @@
         colorType: -1
       }
     },
+    stash: ['jm'],
     mounted () {
       jsMindDraggable(jsMind)
 
@@ -141,8 +143,17 @@
         theme: 'orange'
       }
 
-      this.$cosmos.jm = new jsMind(options)
-      this.$cosmos.jm.show(mind)
+      this.jm = new jsMind(options)
+      this.jm.show(mind)
+      this.$watch('jm.mind.selected', function (newVal, oldVal) {
+        if (newVal === null) {
+          this.selectedNodeId = null
+        } else {
+          this.selectedNodeId = newVal.id
+        }
+      }, {
+        deep: true
+      })
     },
     methods: {
       handleAddNodeDropdown (command) {
@@ -154,28 +165,28 @@
       },
 //      createNode () {
 //        this.formVisible = false
-//        let node = this.$cosmos.jm.mind.selected
+//        let node = this.jm.mind.selected
 //        if (this.newNodeType === 0) {
-//          this.$cosmos.jm.insert_node_before(node, this.form.id, this.form.topic, this.form.data)
+//          this.jm.insert_node_before(node, this.form.id, this.form.topic, this.form.data)
 //        } else if (this.newNodeType === 1) {
-//          this.$cosmos.jm.insert_node_after(node, this.form.id, this.form.topic, this.form.data)
+//          this.jm.insert_node_after(node, this.form.id, this.form.topic, this.form.data)
 //        }
 //        this.form.id = ''
 //        this.form.topic = ''
 //      },
       addSiblingNode () {
-        let selected_node = this.$cosmos.jm.get_selected_node()
+        let selected_node = this.jm.get_selected_node()
         if (selected_node && !selected_node.isroot) {
           let nodeid = jsMind.util.uuid.newid()
-          let node = this.$cosmos.jm.insert_node_after(selected_node, nodeid, '新结点')
+          let node = this.jm.insert_node_after(selected_node, nodeid, '新结点')
           if (node) {
-            this.$cosmos.jm.select_node(nodeid)
-            this.$cosmos.jm.begin_edit(nodeid)
+            this.jm.select_node(nodeid)
+            this.jm.begin_edit(nodeid)
           }
         }
       },
       addChildNode () {
-        let selected_node = this.$cosmos.jm.get_selected_node()
+        let selected_node = this.jm.get_selected_node()
         if (!selected_node) {
           this.$notify({
             title: '警告',
@@ -186,15 +197,15 @@
         }
         if (selected_node) {
           let nodeid = jsMind.util.uuid.newid()
-          let node = this.$cosmos.jm.add_node(selected_node, nodeid, '新结点')
+          let node = this.jm.add_node(selected_node, nodeid, '新结点')
           if (node) {
-            this.$cosmos.jm.select_node(nodeid)
-            this.$cosmos.jm.begin_edit(nodeid)
+            this.jm.select_node(nodeid)
+            this.jm.begin_edit(nodeid)
           }
         }
       },
       deleteNode () {
-        let selected_node = this.$cosmos.jm.get_selected_node()
+        let selected_node = this.jm.get_selected_node()
         if (!selected_node) {
           this.$notify({
             title: '警告',
@@ -203,7 +214,7 @@
           })
           return
         }
-        this.$cosmos.jm.remove_node(selected_node.id)
+        this.jm.remove_node(selected_node.id)
         // this.$store.dispatch('delete_node', node.id)
       },
       openColor (type) {
@@ -212,7 +223,7 @@
       },
       modifyColor () {
         this.colorVisible = false
-        let node = this.$cosmos.jm.get_selected_node()
+        let node = this.jm.get_selected_node()
         if (!node) {
           this.$notify({
             title: '警告',
@@ -222,9 +233,9 @@
           return
         }
         if (this.colorType === 0) {
-          this.$cosmos.jm.set_node_color(node.id, this.color, null)
+          this.jm.set_node_color(node.id, this.color, null)
         } else if (this.colorType === 1) {
-          this.$cosmos.jm.set_node_color(node.id, null, this.color)
+          this.jm.set_node_color(node.id, null, this.color)
         }
         this.color = ''
       }

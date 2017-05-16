@@ -6,18 +6,24 @@ import 'element-ui/lib/theme-default/index.css'
 import App from './App'
 import router from './router'
 import VueResource from 'vue-resource'
-import VueCosmos from './vue-cosmos.js'
-
+// import VueCosmos from './vue-cosmos.js'
+import VueStash from './vue-stash/src/index'
 Vue.use(VueResource)
 Vue.config.productionTip = false
 
 Vue.use(ElementUI)
-Vue.use(VueCosmos)
+// Vue.use(VueCosmos)
+Vue.use(VueStash)
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
   template: '<App/>',
-  components: { App }
+  components: { App },
+  data: {
+    stash: {
+      jm: null
+    }
+  }
 })
