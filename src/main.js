@@ -7,7 +7,7 @@ import App from './App'
 import router from './router'
 import VueResource from 'vue-resource'
 // import VueCosmos from './vue-cosmos.js'
-import VueStash from './vue-stash/src/index'
+import VueStash from './vue-stash2/src/index'
 Vue.use(VueResource)
 Vue.config.productionTip = false
 
