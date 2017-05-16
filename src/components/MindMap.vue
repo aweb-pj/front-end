@@ -8,8 +8,8 @@
               新增结点<i class="el-icon-caret-bottom el-icon--right"></i>
             </el-button>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item><a @click="openForm(0)">新增前结点</a></el-dropdown-item>
-              <el-dropdown-item><a @click="openForm(1)">新增后结点</a></el-dropdown-item>
+              <el-dropdown-item><a @click="addChildNode">子结点</a></el-dropdown-item>
+              <el-dropdown-item><a @click="addSiblingNode">兄弟结点</a></el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </div>
@@ -43,7 +43,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="formVisible = false">取 消</el-button>
-        <el-button type="primary" @click="createNode">确 定</el-button>
+        <el-button type="primary" @click="">确 定</el-button>
       </div>
     </el-dialog>
 
@@ -62,7 +62,7 @@
 </template>
 
 <script>
-  /* eslint-disable new-cap */
+  /* eslint-disable new-cap,camelcase */
   import './MindMap/jsmind/style/jsmind.css'
   import jsMind from './MindMap/jsmind/js/jsmind.js'
   import jsMindDraggable from './MindMap/jsmind/js/jsmind.draggable.js'
@@ -149,16 +149,46 @@
         this.formVisible = true
         this.newNodeType = type
       },
-      createNode () {
-        this.formVisible = false
-        let node = this.$cosmos.jm.mind.selected
-        if (this.newNodeType === 0) {
-          this.$cosmos.jm.insert_node_before(node, this.form.id, this.form.topic, this.form.data)
-        } else if (this.newNodeType === 1) {
-          this.$cosmos.jm.insert_node_after(node, this.form.id, this.form.topic, this.form.data)
+//      createNode () {
+//        this.formVisible = false
+//        let node = this.$cosmos.jm.mind.selected
+//        if (this.newNodeType === 0) {
+//          this.$cosmos.jm.insert_node_before(node, this.form.id, this.form.topic, this.form.data)
+//        } else if (this.newNodeType === 1) {
+//          this.$cosmos.jm.insert_node_after(node, this.form.id, this.form.topic, this.form.data)
+//        }
+//        this.form.id = ''
+//        this.form.topic = ''
+//      },
+      addSiblingNode () {
+        let selected_node = this.$cosmos.jm.get_selected_node()
+        if (selected_node && !selected_node.isroot) {
+          let nodeid = jsMind.util.uuid.newid()
+          let node = this.$cosmos.jm.insert_node_after(selected_node, nodeid, '新结点')
+          if (node) {
+            this.$cosmos.jm.select_node(nodeid)
+            this.$cosmos.jm.begin_edit(nodeid)
+          }
         }
-        this.form.id = ''
-        this.form.topic = ''
+      },
+      addChildNode () {
+        let selected_node = this.$cosmos.jm.get_selected_node()
+        if (!selected_node) {
+          this.$notify({
+            title: '警告',
+            message: '请先选择一个结点',
+            type: 'error'
+          })
+          return
+        }
+        if (selected_node) {
+          let nodeid = jsMind.util.uuid.newid()
+          let node = this.$cosmos.jm.add_node(selected_node, nodeid, '新结点')
+          if (node) {
+            this.$cosmos.jm.select_node(nodeid)
+            this.$cosmos.jm.begin_edit(nodeid)
+          }
+        }
       },
       deleteNode () {
         let node = this.$cosmos.jm.mind.selected
