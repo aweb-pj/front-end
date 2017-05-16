@@ -2,7 +2,10 @@
   <div>
     <div class="card" v-for="exercise in exercises">
       <el-card>
-        <div class="title"><h4>{{exercise.question}}</h4></div>
+        <div class="title clearfix">
+          <span class="questionTitle">{{exercise.question}}</span>
+          <el-button @click="deleteExercise(exercise)">删除</el-button>
+        </div>
         <el-checkbox-group v-if="exercise.choice">
           <el-checkbox :label="exercise.A"></el-checkbox>
           <el-checkbox :label="exercise.B"></el-checkbox>
@@ -31,6 +34,11 @@
       ...mapGetters([
         'exercises'
       ])
+    },
+    methods: {
+      deleteExercise (exercise) {
+        this.$store.dispatch('delete_exercise', exercise)
+      }
     }
   }
 </script>
@@ -45,7 +53,24 @@
   }
 
   div.title {
-    margin-bottom: 0.5%;
+    margin-bottom: 2%;
+  }
+
+  .clearfix:before,
+  .clearfix:after {
+    display: table;
+    content: "";
+  }
+  .clearfix:after {
+    clear: both
+  }
+
+  div.title span.questionTitle {
+    font-size: 100%;
+  }
+
+  div.title .delete {
+    float: right;
   }
 
   div.padding {
