@@ -3,13 +3,13 @@
     <el-row :gutter="20">
       <el-col :span="3">
         <div>
-          <el-dropdown>
+          <el-dropdown @command="handleAddNodeDropdown">
             <el-button>
               新增结点<i class="el-icon-caret-bottom el-icon--right"></i>
             </el-button>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item><a @click="addChildNode">子结点</a></el-dropdown-item>
-              <el-dropdown-item><a @click="addSiblingNode">兄弟结点</a></el-dropdown-item>
+              <el-dropdown-item command="addChildNode"><a>子结点</a></el-dropdown-item>
+              <el-dropdown-item command="addSiblingNode"><a>兄弟结点</a></el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </div>
@@ -145,6 +145,9 @@
       this.$cosmos.jm.show(mind)
     },
     methods: {
+      handleAddNodeDropdown (command) {
+        this[command]()
+      },
       openForm (type) {
         this.formVisible = true
         this.newNodeType = type
