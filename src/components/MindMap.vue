@@ -48,11 +48,11 @@
     </el-dialog>
 
     <el-dialog title="修改颜色" v-model="colorVisible">
-      <el-form ref="form" :model="form" label-width="80px">
-        <el-form-item label="颜色">
-          <el-input v-model="color"></el-input>
-        </el-form-item>
-      </el-form>
+      <el-radio class="radio" v-model="color" label="black">黑色</el-radio>
+      <el-radio class="radio" v-model="color" label="blue">蓝色</el-radio>
+      <el-radio class="radio" v-model="color" label="yellow">黄色</el-radio>
+      <el-radio class="radio" v-model="color" label="green">绿色</el-radio>
+      <el-radio class="radio" v-model="color" label="white">白色</el-radio>
       <div slot="footer" class="dialog-footer">
         <el-button @click="colorVisible = false">取 消</el-button>
         <el-button type="primary" @click="modifyColor">确 定</el-button>
@@ -79,7 +79,7 @@
           data: []
         },
         colorVisible: false,
-        color: '',
+        color: 'black',
         colorType: -1
       }
     },
@@ -226,7 +226,7 @@
         } else if (this.colorType === 1) {
           this.$cosmos.jm.set_node_color(node.id, null, this.color)
         }
-        this.color = ''
+        this.color = 'black'
       }
     }
   }
