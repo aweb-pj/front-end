@@ -17,13 +17,13 @@
       <el-col :span="2"><div><el-button @click="deleteNode">删除</el-button></div></el-col>
       <el-col :span="3">
         <div>
-          <el-dropdown>
+          <el-dropdown @command="handleChangeColorDropdown">
             <el-button>
               修改颜色<i class="el-icon-caret-bottom el-icon--right"></i>
             </el-button>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item><a @click="openColor(0)">修改背景色</a></el-dropdown-item>
-              <el-dropdown-item><a @click="openColor(1)">修改前景色</a></el-dropdown-item>
+              <el-dropdown-item command="openColor(0)"><a>结点颜色</a></el-dropdown-item>
+              <el-dropdown-item command="openColor(1)"><a>文字颜色</a></el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </div>
@@ -69,6 +69,7 @@
   import './MindMap/jsmind/style/jsmind.css'
   import jsMind from './MindMap/jsmind/js/jsmind.js'
   import jsMindDraggable from './MindMap/jsmind/js/jsmind.draggable.js'
+  import _ from 'lodash'
 
   export default {
     components: {
@@ -111,20 +112,17 @@
       } catch (e) {
         this.jm = jsMind.show(options)
       }
-
-//      this.$watch('jm.mind.selected', function (newVal, oldVal) {
-//        if (newVal === null) {
-//          this.selectedNodeId = null
-//        } else {
-//          this.selectedNodeId = newVal.id
-//        }
-//      }, {
-//        deep: true
-//      })
     },
+
     methods: {
       handleAddNodeDropdown (command) {
         this[command]()
+      },
+      handleChangeColorDropdown (command) {
+        let [colorFn, colorArg] = _.filter(command.split(/(\w+)\((\w+)\)/), (subStr) => {
+          return subStr.length > 0
+        })
+        this[colorFn](colorArg)
       },
       openForm (type) {
         this.formVisible = true
