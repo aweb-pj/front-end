@@ -87,10 +87,12 @@
 
 <script>
   import { mapGetters } from 'vuex'
+  import _ from 'lodash'
 
   export default {
     name: 'sidebar',
     stash: ['jm'],
+    props: ['selectedNodeId'],
     data () {
       return {
         choiceVisible: false,
@@ -116,12 +118,12 @@
     },
     methods: {
       addChoiceQuestion () {
-        this.$store.dispatch('put_exercise', {nodeId: this.selectedNodeId, exercise: this.choiceForm})
+        this.$store.dispatch('put_question', {nodeId: this.selectedNodeId, question: this.choiceForm})
         this.choiceVisible = false
       },
       async save_mindmap () {
         try {
-          await (this.$http.post('http://localhost:1234/tree', this.jm.get_data()))
+          await (this.$http.post('http://localhost:1234/tree', {nodesKeys: _.keys(this.jm.mind.nodes), data: this.jm.get_data()}))
         } catch (e) {
           console.log(e)
         }

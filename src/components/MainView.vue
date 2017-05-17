@@ -2,7 +2,7 @@
   <div>
     <el-row class="tac">
       <el-col :span="3">
-        <sidebar></sidebar>
+        <sidebar :selectedNodeId="selectedNodeId"></sidebar>
       </el-col>
       <el-col :span="18">
         <el-tabs  v-model="selectedTab" type="card" @tab-click="click_tab">
@@ -78,7 +78,7 @@
         let index = tab.index
         this.$store.dispatch('change_menu', index)
         if (index === '1') {
-          await this.$store.dispatch('get_exercises', this.selectedNodeId)
+          await this.$store.dispatch('get_homework', this.selectedNodeId)
         }
       }
     }

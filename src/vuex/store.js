@@ -34,7 +34,7 @@ const state = {
   token: '',
   account: '',
   message_history: [],
-  exercises: {},
+  homework: {},
   menu_index: 0,
   delete_node_id: -1
 }
@@ -72,32 +72,36 @@ const mutations = {
     state.message_history[index].bg_color = 'rgb(' + click + ',' + click + ',' + click + ')'
   },
 
-  PUT_EXERCISE (state, {nodeId, exercise}) {
+  PUT_QUESTION (state, {nodeId, question}) {
     if (nodeId !== null) {
-      if (_.has(state.exercises, nodeId) === false) {
-        Vue.set(state.exercises, nodeId, [])
+      if (_.has(state.homework, nodeId) === false) {
+        Vue.set(state.homework, nodeId, {publish: false, questions: []})
       }
-      state.exercises[nodeId].push(exercise)
+      state.homework[nodeId].questions.push(question)
     }
   },
 
-  CLEAN_EXERCISES (state, nodeId) {
+  CLEAN_QUESTIONS (state, nodeId) {
     if (nodeId !== null) {
-      if (_.has(state.exercises, nodeId) === false) {
-        Vue.set(state.exercises, nodeId, [])
+      if (_.has(state.homework, nodeId) === false) {
+        Vue.set(state.homework, nodeId, {publish: false, questions: []})
       } else {
-        while (state.exercises[nodeId].length !== 0) {
-          state.exercises[nodeId].pop()
+        while (state.homework[nodeId].questions.length !== 0) {
+          state.homework[nodeId].questions.pop()
         }
       }
     }
   },
 
+  SET_HOMEWORK_PUBLISH (state, {nodeId, publish}) {
+    state.homework[nodeId].publish = publish
+  },
+
   CHANGE_MENU_INDEX (state, index) {
     state.menu_index = index
   },
-  DELETE_EXERCISE (state, {nodeId, index}) {
-    state.exercises[nodeId].splice(index, 1)
+  DELETE_QUESTION (state, {nodeId, index}) {
+    state.homework[nodeId].questions.splice(index, 1)
   },
 
   DELETE_NODE (state, id) {
@@ -163,35 +167,39 @@ const actions = {
     commit('CLICK_PLUS_ONE', id)
   },
 
-  async get_exercises ({commit}, nodeId) {
+  async get_homework ({commit}, nodeId) {
     // console.log(id)
     try {
-      let response = await Vue.http.get('https://file.jtwang.me/homework.json')
-      let exercises = response.body.data
-      commit('CLEAN_EXERCISES', nodeId)
-      _.forEach(exercises, function (exercise) {
-        commit('PUT_EXERCISE', {nodeId, exercise})
+      let response = await Vue.http.get('http://localhost:1234/node/' + nodeId + '/homework')
+      let homework = response.data
+      // console.log(homework)
+      commit('CLEAN_QUESTIONS', nodeId)
+      commit('SET_HOMEWORK_PUBLISH', {nodeId: nodeId, publish: homework.publish})
+      _.forEach(homework.questions, function (question) {
+        // console.log(question)
+        commit('PUT_QUESTION', {nodeId, question})
       })
     } catch (error) {
-      console.log(error)
+      // console.log(error)
+      commit('CLEAN_QUESTIONS', nodeId)
     }
   },
 
-  put_exercise ({commit}, exercise) {
-    commit('PUT_EXERCISE', exercise)
+  put_question ({commit}, question) {
+    commit('PUT_QUESTION', question)
   },
 
   change_menu ({commit}, index) {
     commit('CHANGE_MENU_INDEX', index)
   },
-  delete_exercise ({commit}, index) {
-    commit('DELETE_EXERCISE', index)
+  delete_question ({commit}, index) {
+    commit('DELETE_QUESTION', index)
   },
-  update_exercises ({commit}, {nodeId, exercises}) {
+  update_questions ({commit}, {nodeId, questions}) {
     try {
-      commit('CLEAN_EXERCISES', nodeId)
-      _.forEach(exercises, function (exercise) {
-        commit('PUT_EXERCISE', {nodeId, exercise})
+      commit('CLEAN_QUESTIONS', nodeId)
+      _.forEach(questions, function (question) {
+        commit('PUT_QUESTION', {nodeId, question})
       })
     } catch (error) {
       console.log(error)
@@ -223,7 +231,7 @@ export default new Vuex.Store({
       return state.message_history
     },
     exercises () {
-      return state.exercises
+      return state.homework
     },
     menu_index () {
       return state.menu_index

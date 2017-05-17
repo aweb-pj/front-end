@@ -107,8 +107,12 @@
       try {
         let response = await this.$http.get(AWEB_SERVER_ADDR + '/tree')
         mind = response.data
-        this.jm = new jsMind(options)
-        this.jm.show(mind)
+        if (_.isEmpty(mind)) {
+          this.jm = jsMind.show(options)
+        } else {
+          this.jm = new jsMind(options)
+          this.jm.show(mind)
+        }
       } catch (e) {
         this.jm = jsMind.show(options)
       }
@@ -119,10 +123,10 @@
         this[command]()
       },
       handleChangeColorDropdown (command) {
-        let [colorFn, colorArg] = _.filter(command.split(/(\w+)\((\w+)\)/), (subStr) => {
+        let [colorFn, colorArg] = _.filter(command.split(/(\w+)\((\d+)\)/), (subStr) => {
           return subStr.length > 0
         })
-        this[colorFn](colorArg)
+        this[colorFn](_.parseInt(colorArg))
       },
       openForm (type) {
         this.formVisible = true

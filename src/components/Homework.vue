@@ -1,28 +1,30 @@
 <template>
   <div>
-    <draggable v-model="exercises">
-      <div class="card" v-for="(exercise, index) in exercises" :key="exercise.question">
+    <draggable v-model="questions">
+      <div class="card" v-for="(question, index) in questions" :key="question.question">
         <el-card>
           <div class="title clearfix">
-            <span class="questionTitle">{{exercise.question}}</span>
-            <el-button @click="deleteExercise(index)" style="float: right">删除</el-button>
+            <span class="questionTitle">{{question.question}}</span>
+            <el-button @click="deleteQuestion(index)" style="float: right">删除</el-button>
           </div>
-          <el-checkbox-group v-if="exercise.choice">
-            <el-checkbox :label="exercise.A"></el-checkbox>
-            <el-checkbox :label="exercise.B"></el-checkbox>
-            <el-checkbox :label="exercise.C"></el-checkbox>
-            <el-checkbox :label="exercise.D"></el-checkbox>
+          <el-checkbox-group v-if="question.choice">
+            <el-checkbox :label="question.A"></el-checkbox>
+            <el-checkbox :label="question.B"></el-checkbox>
+            <el-checkbox :label="question.C"></el-checkbox>
+            <el-checkbox :label="question.D"></el-checkbox>
           </el-checkbox-group>
           <textarea class="fixedSize" v-else></textarea>
         </el-card>
         <div class="padding">
-
         </div>
       </div>
     </draggable>
     <div class="card">
       <div class="button">
-        <el-button type="primary">提交</el-button>
+        <el-button type="primary" @click="saveHomework()">保存</el-button>
+      </div>
+      <div class="button">
+        <el-button type="primary" @click="publishHomework()">发布</el-button>
       </div>
     </div>
   </div>
@@ -38,18 +40,33 @@
       draggable
     },
     computed: {
-      exercises: {
+      questions: {
         get () {
-          return this.$store.state.exercises[this.selectedNodeId]
+          try {
+            return this.$store.state.homework[this.selectedNodeId].questions
+          } catch (e) {
+            return []
+          }
         },
-        set (exercises) {
-          this.$store.dispatch('update_exercises', {nodeId: this.selectedNodeId, exercises: exercises})
+        set (questions) {
+          this.$store.dispatch('update_questions', {nodeId: this.selectedNodeId, questions: questions})
         }
       }
     },
     methods: {
-      deleteExercise (index) {
-        this.$store.dispatch('delete_exercise', {nodeId: this.selectedNodeId, index: index})
+      deleteQuestion (index) {
+        this.$store.dispatch('delete_question', {nodeId: this.selectedNodeId, index: index})
+      },
+      async saveHomework () {
+        try {
+          console.log(this.$store.state.homework[this.selectedNodeId])
+          await this.$http.post('http://localhost:1234' + '/node/' + this.selectedNodeId + '/homework', this.$store.state.homework[this.selectedNodeId])
+        } catch (e) {
+        }
+      },
+      async publishHomework () {
+        // TODO
+        console.log(this.homework)
       }
     }
   }
