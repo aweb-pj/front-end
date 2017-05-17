@@ -1,22 +1,25 @@
 <template>
   <div>
-    <div class="card" v-for="(exercise, index) in exercises[selectedNodeId]" :key="exercise.question">
-      <el-card>
-        <div class="title clearfix">
-          <span class="questionTitle">{{exercise.question}}</span>
-          <el-button @click="deleteExercise(index)" style="float: right">删除</el-button>
+    <draggable v-model="exercises">
+      <div class="card" v-for="(exercise, index) in exercises" :key="exercise.question">
+        <el-card>
+          <div class="title clearfix">
+            <span class="questionTitle">{{exercise.question}}</span>
+            <el-button @click="deleteExercise(index)" style="float: right">删除</el-button>
+          </div>
+          <el-checkbox-group v-if="exercise.choice">
+            <el-checkbox :label="exercise.A"></el-checkbox>
+            <el-checkbox :label="exercise.B"></el-checkbox>
+            <el-checkbox :label="exercise.C"></el-checkbox>
+            <el-checkbox :label="exercise.D"></el-checkbox>
+          </el-checkbox-group>
+          <textarea class="fixedSize" v-else></textarea>
+        </el-card>
+        <div class="padding">
+
         </div>
-        <el-checkbox-group v-if="exercise.choice">
-          <el-checkbox :label="exercise.A"></el-checkbox>
-          <el-checkbox :label="exercise.B"></el-checkbox>
-          <el-checkbox :label="exercise.C"></el-checkbox>
-          <el-checkbox :label="exercise.D"></el-checkbox>
-        </el-checkbox-group>
-        <textarea class="fixedSize" v-else></textarea>
-      </el-card>
-      <div class="padding">
       </div>
-    </div>
+    </draggable>
     <div class="card">
       <div class="button">
         <el-button type="primary">提交</el-button>
@@ -26,15 +29,23 @@
 </template>
 
 <script>
-  import { mapGetters } from 'vuex'
+  import draggable from 'vuedraggable'
 
   export default {
     name: 'homework',
     props: ['selectedNodeId'],
+    components: {
+      draggable
+    },
     computed: {
-      ...mapGetters([
-        'exercises'
-      ])
+      exercises: {
+        get () {
+          return this.$store.state.exercises[this.selectedNodeId]
+        },
+        set (exercises) {
+          this.$store.dispatch('update_exercises', {nodeId: this.selectedNodeId, exercises: exercises})
+        }
+      }
     },
     methods: {
       deleteExercise (index) {

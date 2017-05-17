@@ -99,6 +99,7 @@ const mutations = {
   DELETE_EXERCISE (state, {nodeId, index}) {
     state.exercises[nodeId].splice(index, 1)
   },
+
   DELETE_NODE (state, id) {
     state.delete_node_id = id
   }
@@ -185,6 +186,16 @@ const actions = {
   },
   delete_exercise ({commit}, index) {
     commit('DELETE_EXERCISE', index)
+  },
+  update_exercises ({commit}, {nodeId, exercises}) {
+    try {
+      commit('CLEAN_EXERCISES', nodeId)
+      _.forEach(exercises, function (exercise) {
+        commit('PUT_EXERCISE', {nodeId, exercise})
+      })
+    } catch (error) {
+      console.log(error)
+    }
   },
   delete_node ({commit}, id) {
     commit('DELETE_NODE', id)
