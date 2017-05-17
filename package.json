@@ -13,6 +13,7 @@
     "lint": "eslint --ext .js,.vue src test/unit/specs test/e2e/specs"
   },
   "dependencies": {
+    "axios": "^0.16.1",
     "element-ui": "^1.2.9",
     "express": "^4.15.2",
     "lodash": "^4.17.4",

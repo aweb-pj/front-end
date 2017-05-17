@@ -90,6 +90,7 @@
 
   export default {
     name: 'sidebar',
+    stash: ['jm'],
     data () {
       return {
         choiceVisible: false,
@@ -114,7 +115,11 @@
     },
     methods: {
       async save_mindmap () {
-        console.log(this.$cosmos.jm.get_data())
+        try {
+          await (this.$http.post('http://localhost:1234/tree', this.jm.get_data()))
+        } catch (e) {
+          console.log(e)
+        }
       }
     }
   }

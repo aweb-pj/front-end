@@ -470,7 +470,7 @@ export default (function(){
                     "version":__version__
                 },
                 "format":"node_tree",
-                "data":{"id":"root","topic":"jsMind Example"}
+                "data":{"id":"root","topic":"初始根结点"}
             },
             get_mind:function(source){
                 var df = jm.format.node_tree;
