@@ -1,7 +1,7 @@
 <template>
 <div>
-  <input v-model="file_server_addr" placeholder="file server addr">
-  <p>file server is: {{ file_server_addr }}</p>
+  <!--<input v-model="file_server_addr" placeholder="file server addr">-->
+  <!--<p>file server is: {{ file_server_addr }}</p>-->
     <div>
     <el-upload
         class="upload-demo"
@@ -44,7 +44,7 @@
     name: 'homework',
     data () {
       return {
-        file_server_addr: '',
+        file_server_addr: 'http://localhost:1234/node/root/material',
         dialogFormVisible: false,
         form: {
           name: '',
