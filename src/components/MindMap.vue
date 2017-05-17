@@ -69,9 +69,9 @@
 
   export default {
     name: 'mind-map',
+    props: ['selectedNodeId'],
     data () {
       return {
-        selectedNodeId: null,
         formVisible: false,
         newNodeType: -1,
         form: {
@@ -104,15 +104,15 @@
         this.jm = jsMind.show(options)
       }
 
-      this.$watch('jm.mind.selected', function (newVal, oldVal) {
-        if (newVal === null) {
-          this.selectedNodeId = null
-        } else {
-          this.selectedNodeId = newVal.id
-        }
-      }, {
-        deep: true
-      })
+//      this.$watch('jm.mind.selected', function (newVal, oldVal) {
+//        if (newVal === null) {
+//          this.selectedNodeId = null
+//        } else {
+//          this.selectedNodeId = newVal.id
+//        }
+//      }, {
+//        deep: true
+//      })
     },
     methods: {
       handleAddNodeDropdown (command) {

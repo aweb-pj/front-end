@@ -8,15 +8,15 @@
         <el-tabs  v-model="selectedTab" type="card" @tab-click="click_tab">
           <el-tab-pane :label="tabs[0].title" :name="tabs[0].name">
             <div class="tabContent">
-              <mind-map></mind-map>
+              <mind-map :selectedNodeId="selectedNodeId"></mind-map>
             </div>
           </el-tab-pane>
-          <el-tab-pane :label="tabs[1].title" :name="tabs[1].name" >
+          <el-tab-pane :label="tabs[1].title" :name="tabs[1].name" v-if="selectedNodeId !== null">
             <div class="tabContent">
               <homework></homework>
             </div>
           </el-tab-pane>
-          <el-tab-pane :label="tabs[2].title" :name="tabs[2].name">
+          <el-tab-pane :label="tabs[2].title" :name="tabs[2].name" v-if="selectedNodeId !== null">
             <div class="tabContent">
               <material></material>
             </div>
@@ -41,6 +41,7 @@
 
   export default {
     name: 'main-view',
+    stash: ['jm'],
     components: {
       Sidebar,
       MindMap,
@@ -56,6 +57,20 @@
           { title: '作业', name: '2' },
           { title: '课件', name: '3' }
         ]
+      }
+    },
+    computed: {
+      selectedNodeId: function () {
+        try {
+          let selectedNode = this.jm.mind.selected
+          if (selectedNode) {
+            return selectedNode.id
+          } else {
+            return null
+          }
+        } catch (e) {
+          return null
+        }
       }
     },
     methods: {

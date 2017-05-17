@@ -67,7 +67,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="choiceVisible = false">取 消</el-button>
-        <el-button type="primary" @click="choiceVisible = false">确 定</el-button>
+        <el-button type="primary" @click="addChoiceQuestion()">确 定</el-button>
       </div>
     </el-dialog>
 
@@ -114,6 +114,10 @@
       ])
     },
     methods: {
+      addChoiceQuestion () {
+        console.log(this.choiceForm)
+        this.choiceVisible = false
+      },
       async save_mindmap () {
         try {
           await (this.$http.post('http://localhost:1234/tree', this.jm.get_data()))
