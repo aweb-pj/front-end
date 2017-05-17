@@ -87,7 +87,6 @@ const mutations = {
   DELETE_EXERCISE (state, index) {
     state.exercises.splice(index, 1)
   },
-
   DELETE_NODE (state, id) {
     state.delete_node_id = id
   }
@@ -168,7 +167,6 @@ const actions = {
   delete_exercise ({commit}, index) {
     commit('DELETE_EXERCISE', index)
   },
-
   delete_node ({commit}, id) {
     commit('DELETE_NODE', id)
   }

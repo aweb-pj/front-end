@@ -53,7 +53,24 @@
   }
 
   div.title {
-    margin-bottom: 0.5%;
+    margin-bottom: 2%;
+  }
+
+  .clearfix:before,
+  .clearfix:after {
+    display: table;
+    content: "";
+  }
+  .clearfix:after {
+    clear: both
+  }
+
+  div.title span.questionTitle {
+    font-size: 100%;
+  }
+
+  div.title .delete {
+    float: right;
   }
 
   div.padding {
