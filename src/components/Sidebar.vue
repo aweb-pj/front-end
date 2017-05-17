@@ -42,19 +42,19 @@
     <el-dialog title="新增选择题" v-model="choiceVisible">
       <el-form ref="form" :model="choiceForm" label-width="80px">
         <el-form-item label="问题标题">
-          <el-input v-model="choiceForm.name"></el-input>
+          <el-input v-model="choiceForm.question"></el-input>
         </el-form-item>
         <el-form-item label="选项A">
-          <el-input v-model="choiceForm.choice1"></el-input>
+          <el-input v-model="choiceForm.A"></el-input>
         </el-form-item>
         <el-form-item label="选项B">
-          <el-input v-model="choiceForm.choice2"></el-input>
+          <el-input v-model="choiceForm.B"></el-input>
         </el-form-item>
         <el-form-item label="选项C">
-          <el-input v-model="choiceForm.choice3"></el-input>
+          <el-input v-model="choiceForm.C"></el-input>
         </el-form-item>
         <el-form-item label="选项D">
-          <el-input v-model="choiceForm.choice4"></el-input>
+          <el-input v-model="choiceForm.D"></el-input>
         </el-form-item>
         <el-form-item label="答案">
           <el-checkbox-group v-model="choiceForm.answer">
@@ -74,7 +74,7 @@
     <el-dialog title="新增简答题" v-model="shortAnswerVisible">
       <el-form ref="form" :model="shortAnswerForm" label-width="80px">
         <el-form-item label="问题标题">
-          <el-input v-model="shortAnswerForm.name"></el-input>
+          <el-input v-model="shortAnswerForm.question"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -95,16 +95,17 @@
       return {
         choiceVisible: false,
         choiceForm: {
-          name: '',
-          choice1: '',
-          choice2: '',
-          choice3: '',
-          choice4: '',
-          answer: []
+          question: '',
+          A: '',
+          B: '',
+          C: '',
+          D: '',
+          answer: [],
+          choice: true
         },
         shortAnswerVisible: false,
         shortAnswerForm: {
-          name: ''
+          question: ''
         }
       }
     },
@@ -115,7 +116,7 @@
     },
     methods: {
       addChoiceQuestion () {
-        console.log(this.choiceForm)
+        this.$store.dispatch('put_exercise', {nodeId: this.selectedNodeId, exercise: this.choiceForm})
         this.choiceVisible = false
       },
       async save_mindmap () {

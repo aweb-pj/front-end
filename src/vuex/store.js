@@ -34,7 +34,7 @@ const state = {
   token: '',
   account: '',
   message_history: [],
-  exercises: [],
+  exercises: {},
   menu_index: 0,
   delete_node_id: -1
 }
@@ -72,20 +72,32 @@ const mutations = {
     state.message_history[index].bg_color = 'rgb(' + click + ',' + click + ',' + click + ')'
   },
 
-  PUT_EXERCISES (state, exercises) {
-    while (state.exercises.length !== 0) {
-      state.exercises.pop()
+  PUT_EXERCISE (state, {nodeId, exercise}) {
+    if (nodeId !== null) {
+      if (_.has(state.exercises, nodeId) === false) {
+        Vue.set(state.exercises, nodeId, [])
+      }
+      state.exercises[nodeId].push(exercise)
     }
-    _.forEach(exercises, function (exercise) {
-      state.exercises.push(exercise)
-    })
+  },
+
+  CLEAN_EXERCISES (state, nodeId) {
+    if (nodeId !== null) {
+      if (_.has(state.exercises, nodeId) === false) {
+        Vue.set(state.exercises, nodeId, [])
+      } else {
+        while (state.exercises[nodeId].length !== 0) {
+          state.exercises[nodeId].pop()
+        }
+      }
+    }
   },
 
   CHANGE_MENU_INDEX (state, index) {
     state.menu_index = index
   },
-  DELETE_EXERCISE (state, index) {
-    state.exercises.splice(index, 1)
+  DELETE_EXERCISE (state, {nodeId, index}) {
+    state.exercises[nodeId].splice(index, 1)
   },
   DELETE_NODE (state, id) {
     state.delete_node_id = id
@@ -150,15 +162,22 @@ const actions = {
     commit('CLICK_PLUS_ONE', id)
   },
 
-  async get_exercises ({commit}, id) {
+  async get_exercises ({commit}, nodeId) {
     // console.log(id)
     try {
       let response = await Vue.http.get('https://file.jtwang.me/homework.json')
       let exercises = response.body.data
-      commit('PUT_EXERCISES', exercises)
+      commit('CLEAN_EXERCISES', nodeId)
+      _.forEach(exercises, function (exercise) {
+        commit('PUT_EXERCISE', {nodeId, exercise})
+      })
     } catch (error) {
       console.log(error)
     }
+  },
+
+  put_exercise ({commit}, exercise) {
+    commit('PUT_EXERCISE', exercise)
   },
 
   change_menu ({commit}, index) {

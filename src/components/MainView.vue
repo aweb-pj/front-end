@@ -13,7 +13,7 @@
           </el-tab-pane>
           <el-tab-pane :label="tabs[1].title" :name="tabs[1].name" v-if="selectedNodeId !== null">
             <div class="tabContent">
-              <homework></homework>
+              <homework :selectedNodeId="selectedNodeId"></homework>
             </div>
           </el-tab-pane>
           <el-tab-pane :label="tabs[2].title" :name="tabs[2].name" v-if="selectedNodeId !== null">
@@ -78,7 +78,7 @@
         let index = tab.index
         this.$store.dispatch('change_menu', index)
         if (index === '1') {
-          await this.$store.dispatch('get_exercises', 0)
+          await this.$store.dispatch('get_exercises', this.selectedNodeId)
         }
       }
     }

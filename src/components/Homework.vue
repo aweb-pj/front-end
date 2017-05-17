@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="card" v-for="(exercise, index) in exercises" :key="exercise.question">
+    <div class="card" v-for="(exercise, index) in exercises[selectedNodeId]" :key="exercise.question">
       <el-card>
         <div class="title clearfix">
           <span class="questionTitle">{{exercise.question}}</span>
@@ -30,6 +30,7 @@
 
   export default {
     name: 'homework',
+    props: ['selectedNodeId'],
     computed: {
       ...mapGetters([
         'exercises'
@@ -37,7 +38,7 @@
     },
     methods: {
       deleteExercise (index) {
-        this.$store.dispatch('delete_exercise', index)
+        this.$store.dispatch('delete_exercise', {nodeId: this.selectedNodeId, index: index})
       }
     }
   }
