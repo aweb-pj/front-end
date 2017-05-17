@@ -570,7 +570,7 @@ export default (function(){
                 },
                 "format":"node_array",
                 "data":[
-                    {"id":"root","topic":"jsMind Example", "isroot":true}
+                    {"id":"root","topic":"初始根结点", "isroot":true}
                 ]
             },
 
@@ -1370,7 +1370,7 @@ export default (function(){
         },
 
         _show:function(mind){
-            var m = mind || jm.format.node_array.example;
+            var m = mind || jm.format.node_tree.example;
 
             this.mind = this.data.load(m);
             if(!this.mind){
