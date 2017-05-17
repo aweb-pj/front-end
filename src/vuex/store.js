@@ -84,6 +84,9 @@ const mutations = {
   CHANGE_MENU_INDEX (state, index) {
     state.menu_index = index
   },
+  DELETE_EXERCISE (state, index) {
+    state.exercises.splice(index, 1)
+  },
 
   DELETE_NODE (state, id) {
     state.delete_node_id = id
@@ -161,6 +164,9 @@ const actions = {
 
   change_menu ({commit}, index) {
     commit('CHANGE_MENU_INDEX', index)
+  },
+  delete_exercise ({commit}, index) {
+    commit('DELETE_EXERCISE', index)
   },
 
   delete_node ({commit}, id) {

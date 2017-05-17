@@ -1,8 +1,11 @@
 <template>
   <div>
-    <div class="card" v-for="exercise in exercises">
+    <div class="card" v-for="(exercise, index) in exercises" :key="exercise.question">
       <el-card>
-        <div class="title"><h4>{{exercise.question}}</h4></div>
+        <div class="title clearfix">
+          <span class="questionTitle">{{exercise.question}}</span>
+          <el-button @click="deleteExercise(index)">删除</el-button>
+        </div>
         <el-checkbox-group v-if="exercise.choice">
           <el-checkbox :label="exercise.A"></el-checkbox>
           <el-checkbox :label="exercise.B"></el-checkbox>
@@ -31,6 +34,11 @@
       ...mapGetters([
         'exercises'
       ])
+    },
+    methods: {
+      deleteExercise (index) {
+        this.$store.dispatch('delete_exercise', index)
+      }
     }
   }
 </script>
