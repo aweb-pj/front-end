@@ -4,7 +4,7 @@
       <div @click="openFrame(file)" v-for="(file, index) in files" :key="file">
         <el-card>
           <span>{{file}}</span>
-          <el-button @click="deleteFile(index)" style="float: right">删除</el-button>
+          <el-button @click="deleteFile(index, $event)" style="float: right">删除</el-button>
         </el-card>
       </div>
     </draggable>
@@ -77,7 +77,12 @@
       afterSuccessing (response, file, fileList) {
         this.$store.commit('PUT_FILE', {nodeId: this.selectedNodeId, file: this.selectedNodeId + '_' + file.name.replace(/\s+/g, '_').toLowerCase()})
       },
-      deleteFile (index) {
+      deleteFile (index, event) {
+        if (event.stopPropagation) {
+          event.stopPropagation()
+        } else {
+          event.cancelBubble = true
+        }
         this.$store.dispatch('delete_file', {nodeId: this.selectedNodeId, index: index})
       },
       openFrame (file) {
