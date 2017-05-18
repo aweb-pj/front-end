@@ -22,6 +22,7 @@ const LOGOUT = 'LOGOUT'
 // =======
 // let BARRAGE_SERVER_ADDR = 'http://' + (process.env.NODE_ENV === 'production') ? 'barrage.jtwang.me' : 'localhost:3000'
 let BARRAGE_SERVER_ADDR = 'https://barrage.jtwang.me'
+let AWEB_SERVER_ADDR = 'http://localhost:1234'
 
 let socket = null
 
@@ -36,7 +37,8 @@ const state = {
   message_history: [],
   homework: {},
   menu_index: 0,
-  delete_node_id: -1
+  delete_node_id: -1,
+  material: {}
 }
 
 const mutations = {
@@ -106,6 +108,30 @@ const mutations = {
 
   DELETE_NODE (state, id) {
     state.delete_node_id = id
+  },
+
+  PUT_FILE (state, {nodeId, file}) {
+    if (nodeId !== null) {
+      if (_.has(state.material, nodeId) === false) {
+        Vue.set(state.material, nodeId, [])
+      }
+      state.material[nodeId].push(file)
+    }
+  },
+
+  CLEAN_FILES (state, nodeId) {
+    if (nodeId !== null) {
+      if (_.has(state.material, nodeId) === false) {
+        Vue.set(state.material, nodeId, [])
+      } else {
+        while (state.material[nodeId].length !== 0) {
+          state.material[nodeId].pop()
+        }
+      }
+    }
+  },
+  DELETE_FILE (state, {nodeId, index}) {
+    state.material[nodeId].splice(index, 1)
   }
 }
 
@@ -167,20 +193,20 @@ const actions = {
     commit('CLICK_PLUS_ONE', id)
   },
 
+  change_menu ({commit}, index) {
+    commit('CHANGE_MENU_INDEX', index)
+  },
+
   async get_homework ({commit}, nodeId) {
-    // console.log(id)
     try {
-      let response = await Vue.http.get('http://localhost:1234/node/' + nodeId + '/homework')
+      let response = await Vue.http.get(AWEB_SERVER_ADDR + '/node/' + nodeId + '/homework')
       let homework = response.data
-      // console.log(homework)
       commit('CLEAN_QUESTIONS', nodeId)
       commit('SET_HOMEWORK_PUBLISH', {nodeId: nodeId, publish: homework.publish})
       _.forEach(homework.questions, function (question) {
-        // console.log(question)
         commit('PUT_QUESTION', {nodeId, question})
       })
     } catch (error) {
-      // console.log(error)
       commit('CLEAN_QUESTIONS', nodeId)
     }
   },
@@ -188,12 +214,8 @@ const actions = {
   put_question ({commit}, question) {
     commit('PUT_QUESTION', question)
   },
-
-  change_menu ({commit}, index) {
-    commit('CHANGE_MENU_INDEX', index)
-  },
-  delete_question ({commit}, index) {
-    commit('DELETE_QUESTION', index)
+  delete_question ({commit}, {nodeId, index}) {
+    commit('DELETE_QUESTION', {nodeId, index})
   },
   update_questions ({commit}, {nodeId, questions}) {
     try {
@@ -207,6 +229,32 @@ const actions = {
   },
   delete_node ({commit}, id) {
     commit('DELETE_NODE', id)
+  },
+
+  async get_material ({commit}, nodeId) {
+    try {
+      let response = await Vue.http.get(AWEB_SERVER_ADDR + '/node/' + nodeId + '/material')
+      let material = response.data
+      commit('CLEAN_FILES', nodeId)
+      _.forEach(material, function (file) {
+        commit('PUT_FILE', {nodeId, file})
+      })
+    } catch (error) {
+      commit('CLEAN_FILES', nodeId)
+    }
+  },
+  update_files ({commit}, {nodeId, files}) {
+    try {
+      commit('CLEAN_FILES', nodeId)
+      _.forEach(files, function (file) {
+        commit('PUT_FILE', {nodeId, file})
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  },
+  delete_file ({commit}, {nodeId, index}) {
+    commit('DELETE_FILE', {nodeId, index})
   }
 }
 

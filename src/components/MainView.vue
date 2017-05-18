@@ -18,7 +18,7 @@
           </el-tab-pane>
           <el-tab-pane :label="tabs[2].title" :name="tabs[2].name" v-if="selectedNodeId !== null">
             <div class="tabContent">
-              <material></material>
+              <material :selectedNodeId="selectedNodeId"></material>
             </div>
           </el-tab-pane>
         </el-tabs>
@@ -79,6 +79,8 @@
         this.$store.dispatch('change_menu', index)
         if (index === '1') {
           await this.$store.dispatch('get_homework', this.selectedNodeId)
+        } else if (index === '2') {
+          await this.$store.dispatch('get_material', this.selectedNodeId)
         }
       }
     }
