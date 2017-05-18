@@ -253,8 +253,13 @@ const actions = {
       console.log(error)
     }
   },
-  delete_file ({commit}, {nodeId, index}) {
-    commit('DELETE_FILE', {nodeId, index})
+  async delete_file ({commit, state}, {nodeId, index}) {
+    try {
+      await Vue.http.delete(AWEB_SERVER_ADDR + '/node/' + nodeId + '/material/' + state.material[nodeId][index])
+      commit('DELETE_FILE', {nodeId, index})
+    } catch (error) {
+      console.log(error)
+    }
   }
 }
 
