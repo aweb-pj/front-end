@@ -243,8 +243,9 @@ const actions = {
       commit('CLEAN_FILES', nodeId)
     }
   },
-  update_files ({commit}, {nodeId, files}) {
+  async update_files ({commit}, {nodeId, files}) {
     try {
+      await Vue.http.put(AWEB_SERVER_ADDR + '/node/' + nodeId + '/material', {material: files})
       commit('CLEAN_FILES', nodeId)
       _.forEach(files, function (file) {
         commit('PUT_FILE', {nodeId, file})
