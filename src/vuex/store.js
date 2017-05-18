@@ -233,9 +233,9 @@ const actions = {
 
   async get_material ({commit}, nodeId) {
     try {
-      // let response = await Vue.http.get(AWEB_SERVER_ADDR + '/node/' + nodeId + '/material')
-      // let material = response.data
-      let material = ['1.png', '2.txt']
+      let response = await Vue.http.get(AWEB_SERVER_ADDR + '/node/' + nodeId + '/material')
+      let material = response.data
+      // let material = ['1.png', '2.txt']
       commit('CLEAN_FILES', nodeId)
       _.forEach(material, function (file) {
         commit('PUT_FILE', {nodeId, file})

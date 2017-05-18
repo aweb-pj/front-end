@@ -66,7 +66,11 @@
       },
       viewURL: function () {
         let serverUrl = 'http://localhost:1234/node/' + this.selectedNodeId + '/material/' + this.selectedFile
-        return 'https://view.officeapps.live.com/op/view.aspx?src=' + serverUrl
+        if (this.selectedFile.search(/.+\.(ppt|pptx|doc|docx|xls|xlsx)/g) !== -1) {
+          return 'https://view.officeapps.live.com/op/view.aspx?src=' + serverUrl
+        } else {
+          return serverUrl
+        }
       }
     },
     methods: {
