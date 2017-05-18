@@ -1,25 +1,28 @@
 <template>
-<div>
-  <draggable v-model="files">
-    <div v-for="(file, index) in files" :key="file">
-      <el-card>
-        <span>{{file}}</span>
-        <el-button @click="deleteFile(index)" style="float: right">删除</el-button>
-      </el-card>
-    </div>
-  </draggable>
   <div>
-    <el-upload
-        class="upload-demo"
-        drag
-        :action="file_server_addr"
-        :on-success="afterSuccessing"	>
-      <i class="el-icon-upload"></i>
-      <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-      <!--<div class="el-upload__tip" slot="tip">上传文件大小不超过 10 MB</div>-->
-    </el-upload>
-  </div>
-
+    <draggable v-model="files">
+      <div @click="openFrame(file)" v-for="(file, index) in files" :key="file">
+        <el-card>
+          <span>{{file}}</span>
+          <el-button @click="deleteFile(index)" style="float: right">删除</el-button>
+        </el-card>
+      </div>
+    </draggable>
+    <div>
+      <el-upload
+          class="upload-demo"
+          drag
+          :action="file_server_addr"
+          :on-success="afterSuccessing"	>
+        <i class="el-icon-upload"></i>
+        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+        <!--<div class="el-upload__tip" slot="tip">上传文件大小不超过 10 MB</div>-->
+      </el-upload>
+    </div>
+    <el-dialog title="课件" v-model="dialogVisible" size="large">
+      <iframe class="frame" :src="viewURL">
+      </iframe>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -34,7 +37,7 @@
     data () {
       return {
         file_server_addr: 'http://localhost:1234/node/root/material',
-        dialogFormVisible: false,
+        dialogVisible: false,
         form: {
           name: '',
           region: '',
@@ -45,7 +48,7 @@
           resource: '',
           desc: ''
         },
-        formLabelWidth: '120px'
+        selectedFile: ''
       }
     },
     computed: {
@@ -60,6 +63,10 @@
         set (files) {
           this.$store.dispatch('update_files', {nodeId: this.selectedNodeId, files: files})
         }
+      },
+      viewURL: function () {
+        let serverUrl = 'http://localhost:1234/node/' + this.selectedNodeId + '/material/' + this.selectedFile
+        return 'https://view.officeapps.live.com/op/view.aspx?src=' + serverUrl
       }
     },
     methods: {
@@ -68,7 +75,17 @@
       },
       deleteFile (index) {
         this.$store.dispatch('delete_file', {nodeId: this.selectedNodeId, index: index})
+      },
+      openFrame (file) {
+        this.dialogVisible = true
+        this.selectedFile = file
       }
     }
   }
 </script>
+<style scoped>
+  .frame {
+    width: 800px;
+    height: 600px;
+  }
+</style>

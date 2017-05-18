@@ -53,7 +53,7 @@
       <!--<el-radio class="radio" v-model="color" label="yellow">黄色</el-radio>-->
       <!--<el-radio class="radio" v-model="color" label="green">绿色</el-radio>-->
       <!--<el-radio class="radio" v-model="color" label="white">白色</el-radio>-->
-      <chrome-picker v-model="color"></chrome-picker>
+      <el-color-picker v-model="color" show-alpha></el-color-picker>
       <div slot="footer" class="dialog-footer">
         <el-button @click="colorVisible = false">取 消</el-button>
         <el-button type="primary" @click="modifyColor">确 定</el-button>
@@ -64,17 +64,12 @@
 
 <script>
   /* eslint-disable new-cap,camelcase,no-unused-vars */
-  import { Chrome } from 'vue-color'
-
   import './MindMap/jsmind/style/jsmind.css'
   import jsMind from './MindMap/jsmind/js/jsmind.js'
   import jsMindDraggable from './MindMap/jsmind/js/jsmind.draggable.js'
   import _ from 'lodash'
 
   export default {
-    components: {
-      'chrome-picker': Chrome
-    },
     name: 'mind-map',
     props: ['selectedNodeId'],
     data () {
@@ -87,9 +82,7 @@
           data: []
         },
         colorVisible: false,
-        color: {
-          hex: '#000000'
-        },
+        color: 'rgba(0, 0, 0, 1)',
         colorType: -1
       }
     },
@@ -192,9 +185,9 @@
           return
         }
         if (this.colorType === 0) {
-          this.jm.set_node_color(node.id, this.color.hex, null)
+          this.jm.set_node_color(node.id, this.color, null)
         } else if (this.colorType === 1) {
-          this.jm.set_node_color(node.id, null, this.color.hex)
+          this.jm.set_node_color(node.id, null, this.color)
         }
         this.color = 'black'
       }
