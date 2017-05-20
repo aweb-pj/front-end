@@ -12,15 +12,6 @@ const LOGIN = 'LOGIN'
 const LOGIN_SUCCESS = 'LOGIN_SUCCESS'
 const LOGOUT = 'LOGOUT'
 
-// <<<<<<< HEAD
-// let BARRAGE_SERVER_ADDR = 'http://'
-// if (process.env.NODE_ENV === 'production') {
-//   BARRAGE_SERVER_ADDR += 'barrage.jtwang.me'
-// } else {
-//   BARRAGE_SERVER_ADDR += 'localhost:3000'
-// }
-// =======
-// let BARRAGE_SERVER_ADDR = 'http://' + (process.env.NODE_ENV === 'production') ? 'barrage.jtwang.me' : 'localhost:3000'
 let BARRAGE_SERVER_ADDR = 'https://barrage.jtwang.me'
 let AWEB_SERVER_ADDR = 'http://localhost:1234'
 
@@ -30,7 +21,7 @@ const state = {
   username: 'test_username', // TODO: should use real login function to replace with it
   connection_status: false,
   login_toggle: false,
-  is_logged_in: !!localStorage.getItem('token'),
+  is_logged_in: false,
   login_pending: false,
   token: '',
   account: '',
@@ -38,7 +29,8 @@ const state = {
   homework: {},
   menu_index: 0,
   delete_node_id: -1,
-  material: {}
+  material: {},
+  isTeacher: false
 }
 
 const mutations = {
@@ -54,10 +46,11 @@ const mutations = {
     state.login_pending = true
   },
 
-  [LOGIN_SUCCESS] (state, username) {
+  [LOGIN_SUCCESS] (state, {username, isTeacher}) {
     state.is_logged_in = true
     state.login_pending = false
     state.username = username
+    state.isTeacher = isTeacher
   },
 
   [LOGOUT] (state) {
@@ -159,23 +152,11 @@ const actions = {
     socket.on('server_click', (id) => {
       commit('CLICK_PLUS_ONE', id)
     })
-    // socket.on('update_contacts', (people) => {
-    //   console.log('HERE!!!!!!!!')
-    //   commit('CLEAR_CONTACTS')
-    //   _.forEach(people, (person) => { commit('ADD_CONTACT', person) })
-    //   commit('SET_CURRENT_WITH', state.contacts[0])// should check if 0 in production mode
-    // })
   },
 
-  login ({commit}, {username, password}) {
-    commit(LOGIN)
-    // console.log('store: ', username, password)
-    socket.emit('login', {'username': username, 'password': password})
-    socket.on('login_success', () => {
-      localStorage.setItem('token', 'JWT')
-      localStorage.setItem('username', username)
-      commit(LOGIN_SUCCESS, username)
-    })
+  login ({commit}, {username, password, isTeacher}) {
+    // commit(LOGIN)
+    commit(LOGIN_SUCCESS, {username, isTeacher})
   },
 
   logout ({commit}) {
@@ -197,30 +178,45 @@ const actions = {
     commit('CHANGE_MENU_INDEX', index)
   },
 
-  async get_homework ({commit}, nodeId) {
+  async get_homework ({commit, state}, nodeId) {
     try {
       let response = await Vue.http.get(AWEB_SERVER_ADDR + '/node/' + nodeId + '/homework')
       let homework = response.data
       commit('CLEAN_QUESTIONS', nodeId)
       commit('SET_HOMEWORK_PUBLISH', {nodeId: nodeId, publish: homework.publish})
       _.forEach(homework.questions, function (question) {
+        if (!state.isTeacher) {
+          question.solution = {A: false, B: false, C: false, D: false}
+        }
         commit('PUT_QUESTION', {nodeId, question})
       })
     } catch (error) {
       commit('CLEAN_QUESTIONS', nodeId)
     }
   },
+  async save_homework ({state}, nodeId) {
+    try {
+      await this.$http.post('http://localhost:1234' + '/node/' + nodeId + '/homework', state.homework[nodeId])
+    } catch (e) {
+    }
+  },
 
-  put_question ({commit}, question) {
+  put_question ({commit, state}, question) {
+    if (!state.isTeacher) {
+      question.solution = {A: false, B: false, C: false, D: false}
+    }
     commit('PUT_QUESTION', question)
   },
   delete_question ({commit}, {nodeId, index}) {
     commit('DELETE_QUESTION', {nodeId, index})
   },
-  update_questions ({commit}, {nodeId, questions}) {
+  update_questions ({commit, state}, {nodeId, questions}) {
     try {
       commit('CLEAN_QUESTIONS', nodeId)
       _.forEach(questions, function (question) {
+        if (!state.isTeacher) {
+          question.solution = {A: false, B: false, C: false, D: false}
+        }
         commit('PUT_QUESTION', {nodeId, question})
       })
     } catch (error) {
@@ -290,6 +286,9 @@ export default new Vuex.Store({
     },
     menu_index () {
       return state.menu_index
+    },
+    isTeacher () {
+      return state.isTeacher
     }
   },
 

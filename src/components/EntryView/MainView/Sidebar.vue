@@ -7,14 +7,18 @@
           <el-menu-item-group>
             <template slot="title">分组一</template>
             <el-menu-item index="1-1" @click="save_mindmap">保存思维导图</el-menu-item>
-            <el-menu-item index="1-2">选项2</el-menu-item>
           </el-menu-item-group>
           <el-menu-item-group title="分组2">
-            <el-menu-item index="1-3">选项3</el-menu-item>
+            <el-menu-item index="1-2">
+              作业正确率
+              <el-switch v-model="statisticsVisible" on-color="#13ce66" off-color="#ff4949" @change="toggleStatistics">
+                </el-switch>
+                </el-menu-item>
+
           </el-menu-item-group>
           <el-submenu index="1-4">
             <template slot="title">选项4</template>
-            <el-menu-item index="1-4-1">选项1</el-menu-item>
+            <!--<el-menu-item index="1-4-1">选项1</el-menu-item>-->
           </el-submenu>
         </el-submenu>
       </el-menu>
@@ -91,10 +95,11 @@
 
   export default {
     name: 'sidebar',
-    stash: ['jm'],
+    stash: ['jm', 'nodeColors', 'hsv2rgb', 'num2hsv'],
     props: ['selectedNodeId'],
     data () {
       return {
+        statisticsVisible: false,
         choiceVisible: false,
         choiceForm: {
           question: '',
@@ -117,8 +122,43 @@
       ])
     },
     methods: {
+      async toggleStatistics (newState) {
+        let that = this
+        if (newState === true) {
+          that.nodeColors = {}
+          _.forEach(Object.keys(that.jm.mind.nodes), (key) => {
+            that.nodeColors[key] = {}
+          })
+          let answerResultsResponse = await that.$http.get('http://localhost:1234/stat')
+          let answerResults = answerResultsResponse.data
+          _.forEach(that.nodeColors, function (nodeColor, key) {
+            nodeColor.previous = that.jm.mind.nodes[key]._data.view.element.style.backgroundColor
+            let val = answerResults[key] * 100
+            that.jm.mind.nodes[key]._data.view.element.style.backgroundColor = that.hsv2rgb(that.num2hsv(val))
+          })
+          that.jm.disable_edit()
+          this.$notify.info({
+            message: '进入显示正确率状态，思维导图编辑功能已关闭'
+          })
+        } else {
+          _.forEach(that.nodeColors, (nodeColor, key) => {
+            if (_.has(nodeColor, 'previous')) {
+              that.jm.mind.nodes[key]._data.view.element.style.backgroundColor = nodeColor.previous
+            }
+          })
+          that.jm.enable_edit()
+          this.$notify.info({
+            message: '退出显示正确率状态，思维导图编辑功能已启用'
+          })
+        }
+      },
       addChoiceQuestion () {
-        this.$store.dispatch('put_question', {nodeId: this.selectedNodeId, question: this.choiceForm})
+        let answerArrToStr = function (answerArr) {
+          return _.cloneDeep(answerArr).sort().join('')
+        }
+        let question = _.cloneDeep(this.choiceForm)
+        question.answer = answerArrToStr(question.answer)
+        this.$store.dispatch('put_question', {nodeId: this.selectedNodeId, question: question})
         this.choiceVisible = false
       },
       async save_mindmap () {

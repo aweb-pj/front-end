@@ -8,8 +8,8 @@
             <el-button @click="deleteQuestion(index)" style="float: right">删除</el-button>
           </div>
           <el-checkbox-group v-if="question.choice">
-            <el-checkbox :label="question.A"></el-checkbox>
-            <el-checkbox :label="question.B"></el-checkbox>
+            <el-checkbox :label="question.A" v-model="h"></el-checkbox>
+            <el-checkbox :label="question.B" ></el-checkbox>
             <el-checkbox :label="question.C"></el-checkbox>
             <el-checkbox :label="question.D"></el-checkbox>
           </el-checkbox-group>
@@ -39,6 +39,11 @@
     components: {
       draggable
     },
+    data () {
+      return {
+        h: true
+      }
+    },
     computed: {
       questions: {
         get () {
@@ -58,16 +63,13 @@
         this.$store.dispatch('delete_question', {nodeId: this.selectedNodeId, index: index})
       },
       async saveHomework () {
-        try {
-          console.log(this.$store.state.homework[this.selectedNodeId])
-          await this.$http.post('http://localhost:1234' + '/node/' + this.selectedNodeId + '/homework', this.$store.state.homework[this.selectedNodeId])
-        } catch (e) {
-        }
+        this.$store.dispatch('save_homework', this.selectedNodeId)
       },
       async publishHomework () {
         // TODO
         console.log(this.homework)
-      }
+      },
+      async sendAnswers () {}
     }
   }
 </script>

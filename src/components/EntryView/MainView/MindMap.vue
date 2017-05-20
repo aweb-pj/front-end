@@ -48,11 +48,6 @@
     </el-dialog>
 
     <el-dialog title="修改颜色" v-model="colorVisible">
-      <!--<el-radio class="radio" v-model="color" label="black">黑色</el-radio>-->
-      <!--<el-radio class="radio" v-model="color" label="blue">蓝色</el-radio>-->
-      <!--<el-radio class="radio" v-model="color" label="yellow">黄色</el-radio>-->
-      <!--<el-radio class="radio" v-model="color" label="green">绿色</el-radio>-->
-      <!--<el-radio class="radio" v-model="color" label="white">白色</el-radio>-->
       <el-color-picker v-model="color" show-alpha></el-color-picker>
       <div slot="footer" class="dialog-footer">
         <el-button @click="colorVisible = false">取 消</el-button>

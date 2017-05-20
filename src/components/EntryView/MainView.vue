@@ -33,11 +33,11 @@
 <script>
   /* eslint-disable new-cap */
 
-  import Sidebar from './Sidebar.vue'
-  import MindMap from './MindMap.vue'
-  import Barrage from './Barrage.vue'
-  import Homework from './Homework.vue'
-  import Material from './Material.vue'
+  import Sidebar from './MainView/Sidebar.vue'
+  import MindMap from './MainView/MindMap.vue'
+  import Barrage from './MainView/Barrage.vue'
+  import Homework from './MainView/Homework.vue'
+  import Material from './MainView/Material.vue'
 
   export default {
     name: 'main-view',
@@ -88,13 +88,6 @@
 
 </script>
 <style scoped>
-  /*#contextMenu{position:absolute;}
-  #contextMenu{
-    border:1px solid green;
-    background:white;
-    list-style:none;
-    padding:3px;
-  }*/
   .tabContent {
     max-height: 92%;
   }
