@@ -3,12 +3,12 @@
     <div v-if="menu_index == 0">
       <el-menu class="sidebar">
         <el-submenu index="1">
-          <template slot="title"><i class="el-icon-message"></i>导航一</template>
+          <template slot="title"><i class="el-icon-message"></i>思维导图</template>
           <el-menu-item-group>
-            <template slot="title">分组一</template>
+            <template slot="title"></template>
             <el-menu-item index="1-1" @click="save_mindmap">保存思维导图</el-menu-item>
           </el-menu-item-group>
-          <el-menu-item-group title="分组2">
+          <el-menu-item-group title="">
             <el-menu-item index="1-2">
               作业正确率
               <el-switch v-model="statisticsVisible" on-color="#13ce66" off-color="#ff4949" @change="toggleStatistics">
@@ -16,18 +16,18 @@
                 </el-menu-item>
 
           </el-menu-item-group>
-          <el-submenu index="1-4">
-            <template slot="title">选项4</template>
-            <!--<el-menu-item index="1-4-1">选项1</el-menu-item>-->
-          </el-submenu>
+          <!--<el-submenu index="1-4">-->
+            <!--<template slot="title">选项4</template>-->
+            <!--&lt;!&ndash;<el-menu-item index="1-4-1">选项1</el-menu-item>&ndash;&gt;-->
+          <!--</el-submenu>-->
         </el-submenu>
       </el-menu>
     </div>
     <div v-else-if="menu_index == 1">
       <el-menu class="sidebar">
         <el-submenu index="1" >
-          <template slot="title"><i class="el-icon-menu"></i>导航二</template>
-          <el-menu-item-group>
+          <template slot="title"><i class="el-icon-menu"></i>作业</template>
+          <el-menu-item-group v-if="isTeacher">
             <template slot="title">新增题目</template>
             <el-menu-item index="1-1" @click="choiceVisible = true">选择题</el-menu-item>
             <el-menu-item index="1-2" @click="shortAnswerVisible = true">简答题</el-menu-item>
@@ -38,7 +38,7 @@
     <div v-else>
       <el-menu class="sidebar">
         <el-submenu index="1">
-          <template slot="title"><i class="el-icon-setting"></i>导航三</template>
+          <template slot="title"><i class="el-icon-setting"></i>课件</template>
         </el-submenu>
       </el-menu>
     </div>
@@ -96,7 +96,7 @@
 
   export default {
     name: 'sidebar',
-    stash: ['jm', 'nodeColors', 'hsv2rgb', 'num2hsv'],
+    stash: ['jm', 'nodeColors', 'hsv2rgb', 'num2hsv', 'isTeacher'],
     props: ['selectedNodeId'],
     data () {
       return {
@@ -130,7 +130,7 @@
           _.forEach(Object.keys(that.jm.mind.nodes), (key) => {
             that.nodeColors[key] = {}
           })
-          let answerResultsResponse = await that.$http.get('http://localhost:1234/stat')
+          let answerResultsResponse = await that.$http.get(_.join([that.$stash.AWEB_SERVER_ADDR, 'stat'], '/'))
           let answerResults = answerResultsResponse.data
           _.forEach(that.nodeColors, function (nodeColor, key) {
             nodeColor.previous = that.jm.mind.nodes[key]._data.view.element.style.backgroundColor
@@ -181,8 +181,9 @@
       },
 
       async save_mindmap () {
+        let that = this
         try {
-          await (this.$http.post('http://localhost:1234/tree', {nodesKeys: _.keys(this.jm.mind.nodes), data: this.jm.get_data()}))
+          await (that.$http.post(_.join([that.$stash.AWEB_SERVER_ADDR, 'tree'], '/'), {nodesKeys: _.keys(that.jm.mind.nodes), data: that.jm.get_data()}))
           this.$alert('保存成功!', '提示', {
             confirmButtonText: '确定',
             callback: action => {

@@ -84,7 +84,7 @@
     stash: ['jm'],
     async mounted () {
       let that = this
-      let AWEB_SERVER_ADDR = 'http://localhost:1234'
+      let AWEB_SERVER_ADDR = that.$stash.AWEB_SERVER_ADDR
       let options = {
         container: 'jsmind_container',
         editable: true,

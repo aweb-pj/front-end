@@ -1,15 +1,29 @@
 <template>
   <div>
-    <draggable v-model="files">
-      <div @click="openFrame(file)" v-for="(file, index) in files" :key="file">
-        <el-card>
-          <span>{{file}}</span>
-          <el-button @click="deleteFile(index, $event)" style="float: right">删除</el-button>
-        </el-card>
+    <div v-if="files.length > 0">
+      <draggable v-model="files" v-if="isTeacher">
+        <div @click="openFrame(file)" v-for="(file, index) in files" :key="file">
+          <el-card>
+            <span>{{file}}</span>
+            <el-button @click="deleteFile(index, $event)" style="float: right">删除</el-button>
+          </el-card>
+        </div>
+      </draggable>
+      <div v-else>
+        <div @click="openFrame(file)" v-for="(file, index) in files" :key="file">
+          <el-card>
+            <span>{{file}}</span>
+            <el-button @click="deleteFile(index, $event)" v-if="isTeacher" style="float: right">删除</el-button>
+          </el-card>
+        </div>
       </div>
-    </draggable>
+    </div>
+    <div v-else-if="!isTeacher">
+      <p>教师尚未上传课件</p>
+    </div>
     <div>
       <el-upload
+          v-if="isTeacher"
           class="upload-demo"
           drag
           :action="file_server_addr"
@@ -27,16 +41,16 @@
 </template>
 <script>
   import draggable from 'vuedraggable'
-
+  import _ from 'lodash'
   export default {
     name: 'homework',
     props: ['selectedNodeId'],
+    stash: ['isTeacher'],
     components: {
       draggable
     },
     data () {
       return {
-        file_server_addr: 'http://localhost:1234/node/root/material',
         dialogVisible: false,
         form: {
           name: '',
@@ -52,6 +66,9 @@
       }
     },
     computed: {
+      file_server_addr () {
+        return _.join([this.$stash.AWEB_SERVER_ADDR, 'node', this.selectedNodeId, 'material'], '/')
+      },
       files: {
         get () {
           try {
@@ -65,7 +82,8 @@
         }
       },
       viewURL: function () {
-        let serverUrl = 'http://localhost:1234/node/' + this.selectedNodeId + '/material/' + this.selectedFile
+        let that = this
+        let serverUrl = _.join([that.$stash.AWEB_SERVER_ADDR, 'node', this.selectedNodeId, 'material' + this.selectedFile], '/')
         if (this.selectedFile.search(/.+\.(ppt|pptx|doc|docx|xls|xlsx)/g) !== -1) {
           return 'https://view.officeapps.live.com/op/view.aspx?src=' + serverUrl
         } else {

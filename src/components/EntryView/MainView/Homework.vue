@@ -7,7 +7,7 @@
         <el-card>
           <div class="title clearfix">
             <span class="questionTitle">{{question.question}}</span>
-            <el-button @click="deleteQuestion(index)" style="float: right">删除</el-button>
+            <el-button v-if="isTeacher" @click="deleteQuestion(index)" style="float: right">删除</el-button>
           </div>
           <div v-if="question.solution !== undefined && question.choice" >
             <span>{{question.A}}</span>
@@ -110,12 +110,22 @@
             })
           }
           await this.$http.post(_.join([this.$stash.AWEB_SERVER_ADDR, 'node', this.selectedNodeId, 'homework'], '/'), homeworkToSave)
+          this.$alert('保存成功！', '提示', {
+            confirmButtonText: '确定',
+            callback: action => {
+            }
+          })
         } catch (e) {
         }
       },
       async publishHomework () {
         this.homework.publish = true
-        this.saveHomework()
+        await this.saveHomework()
+        this.$alert('发布成功！', '提示', {
+          confirmButtonText: '确定',
+          callback: action => {
+          }
+        })
       },
       async sendAnswers () {
         try {

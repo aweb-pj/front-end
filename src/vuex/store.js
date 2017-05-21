@@ -13,7 +13,7 @@ const LOGIN_SUCCESS = 'LOGIN_SUCCESS'
 const LOGOUT = 'LOGOUT'
 
 let BARRAGE_SERVER_ADDR = 'https://barrage.jtwang.me'
-let AWEB_SERVER_ADDR = 'http://localhost:1234'
+let AWEB_SERVER_ADDR = 'https://aweb.jtwang.me'
 
 let socket = null
 
@@ -196,7 +196,7 @@ const actions = {
   },
   async save_homework ({state}, nodeId) {
     try {
-      await this.$http.post('http://localhost:1234' + '/node/' + nodeId + '/homework', state.homework[nodeId])
+      await this.$http.post(state.AWEB_SERVER_ADDR + '/node/' + nodeId + '/homework', state.homework[nodeId])
     } catch (e) {
     }
   },
