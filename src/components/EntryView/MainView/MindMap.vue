@@ -31,7 +31,7 @@
     </el-row>
 
     <div id="jsmind_container"></div>
-
+    <div v-if="isTeacher">
     <el-dialog title="新增结点" v-model="formVisible">
       <el-form ref="form" :model="form" label-width="80px">
         <el-form-item label="结点id">
@@ -54,6 +54,7 @@
         <el-button type="primary" @click="modifyColor">确 定</el-button>
       </div>
     </el-dialog>
+    </div>
   </div>
 </template>
 
@@ -81,7 +82,7 @@
         colorType: -1
       }
     },
-    stash: ['jm'],
+    stash: ['jm', 'isTeacher'],
     async mounted () {
       let that = this
       let AWEB_SERVER_ADDR = that.$stash.AWEB_SERVER_ADDR

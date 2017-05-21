@@ -6,7 +6,7 @@
           <template slot="title"><i class="el-icon-message"></i>思维导图</template>
           <el-menu-item-group>
             <template slot="title"></template>
-            <el-menu-item index="1-1" @click="save_mindmap">保存思维导图</el-menu-item>
+            <el-menu-item index="1-1" @click="save_mindmap" v-if="isTeacher">保存思维导图</el-menu-item>
           </el-menu-item-group>
           <el-menu-item-group title="">
             <el-menu-item index="1-2">
