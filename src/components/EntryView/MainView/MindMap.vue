@@ -31,7 +31,7 @@
     </el-row>
     <ul v-if="statVisible">
       <p>结点颜色（从红到绿）表示正确率（从低到高）0 ~ 100%</p>
-      <li :style="{'background-color': shade}" v-for="(shade, index) in exampleColors" :key="shade"> {{ Math.round(index * 3.3) + 4 }} </li>
+      <li class="justexample" :style="{'background-color': shade}" v-for="(shade, index) in exampleColors" :key="shade"> {{ Math.round(index * 3.3) + 4 }} </li>
     </ul>
 
     <div id="jsmind_container"></div>
@@ -207,7 +207,7 @@
 
 </script>
 <style scoped>
-  li {
+  li.justexample {
     display: block;
     float: left;
     width: 30px;
