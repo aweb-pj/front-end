@@ -1,5 +1,6 @@
 <template>
   <div>
+  <div v-if="!(!homework.publish && !isTeacher)">
     <div v-if="homework !== undefined">
     <draggable v-model="homework.questions">
       <div class="card" v-for="(question, index) in homework.questions" :key="question.question">
@@ -9,13 +10,27 @@
             <el-button @click="deleteQuestion(index)" style="float: right">删除</el-button>
           </div>
           <div v-if="question.solution !== undefined && question.choice" >
-              <el-checkbox :label="question.A"></el-checkbox>
-              <el-checkbox :label="question.B"></el-checkbox>
-              <el-checkbox :label="question.C"></el-checkbox>
-              <el-checkbox :label="question.D"></el-checkbox>
+            <span>{{question.A}}</span>
+            <input type="checkbox" v-model="question.solution.A">
+            <span>{{question.B}}</span>
+            <input type="checkbox" v-model="question.solution.B" >
+            <span>{{question.C}}</span>
+            <input type="checkbox" v-model="question.solution.C" >
+            <span>{{question.D}}</span>
+            <input type="checkbox" v-model="question.solution.D">
           </div>
-
+          <div v-else-if="question.choice">
+            <span>{{question.A}}</span>
+            <input type="checkbox">
+            <span>{{question.B}}</span>
+            <input type="checkbox" >
+            <span>{{question.C}}</span>
+            <input type="checkbox" >
+            <span>{{question.D}}</span>
+            <input type="checkbox">
+          </div>
           <textarea class="fixedSize" v-else></textarea>
+
         </el-card>
         <div class="padding">
         </div>
@@ -23,32 +38,50 @@
     </draggable>
     </div>
     <div class="card">
-      <div class="button">
-        <el-button type="primary" @click="saveHomework()">保存</el-button>
+      <div v-if="isTeacher">
+        <div class="button">
+          <el-button type="primary" @click="saveHomework()">保存</el-button>
+        </div>
+        <div class="button">
+          <el-button type="primary" @click="publishHomework()">发布</el-button>
+        </div>
       </div>
-      <div class="button">
-        <el-button type="primary" @click="publishHomework()">发布</el-button>
+
+      <div class="button" v-else>
+        <el-button type="primary" @click="sendAnswers()">提交</el-button>
       </div>
     </div>
   </div>
+  <div v-else>
+    <p>教师尚未发布作业</p>
+  </div>
+</div>
 </template>
 
 <script>
   import draggable from 'vuedraggable'
   import _ from 'lodash'
-
+  import EventBus from '../../../EventBus.js'
   export default {
     name: 'homework',
     props: ['selectedNodeId'],
-    stash: ['isTeacher'],
+    stash: ['isTeacher', 'username'],
     components: {
       draggable
     },
     data () {
       return {
+        check: true,
         homework: {publish: false, questions: []}
       }
     },
+    created () {
+      let that = this
+      EventBus.$on('add_question', function (question) {
+        that.homework.questions.push(question)
+      })
+    },
+
     async mounted () {
       let that = this
       let response = await this.$http.get(_.join([this.$stash.AWEB_SERVER_ADDR, 'node', this.selectedNodeId, 'homework'], '/'))
@@ -58,12 +91,12 @@
           question.solution = {A: false, B: false, C: false, D: false}
         })
       }
+      setInterval(function () {
+        that.$forceUpdate()
+      }, 100)
     },
 
     methods: {
-      print () {
-        alert('fuck')
-      },
       deleteQuestion (index) {
         this.homework.questions.splice(index, 1)
       },
@@ -81,10 +114,23 @@
         }
       },
       async publishHomework () {
-        // TODO
-        console.log(this.homework)
+        this.homework.publish = true
+        this.saveHomework()
       },
-      async sendAnswers () {}
+      async sendAnswers () {
+        let answer = _.map(this.homework.questions, (q) => {
+          let solutions = q.solution
+          let resultArr = []
+          _.forEach(solutions, (value, key) => {
+            if (value === true) {
+              resultArr.push(key)
+            }
+          })
+          return _.join(resultArr.sort(), '')
+        })
+        console.log(answer)
+        await this.$http.post(_.join([this.$stash.AWEB_SERVER_ADDR, 'node', this.selectedNodeId, 'answer', this.username], '/'), {answer: answer})
+      }
     }
   }
 </script>

@@ -83,6 +83,7 @@
     },
     stash: ['jm'],
     async mounted () {
+      let that = this
       let AWEB_SERVER_ADDR = 'http://localhost:1234'
       let options = {
         container: 'jsmind_container',
@@ -104,6 +105,13 @@
       } catch (e) {
         this.jm = jsMind.show(options)
       }
+//      setInterval(async function () {
+//        try {
+//          await (that.$http.post('http://localhost:1234/tree', {nodesKeys: _.keys(that.jm.mind.nodes), data: that.jm.get_data()}))
+//        } catch (e) {
+//          console.log(e)
+//        }
+//      }, 100)
     },
 
     methods: {

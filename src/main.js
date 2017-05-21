@@ -26,6 +26,9 @@ new Vue({
       jm: null,
       nodeColors: {},
       homework: {},
+      username: '',
+      isTeacher: true,
+      is_logged_in: false,
       AWEB_SERVER_ADDR: 'http://localhost:1234',
       hsv2rgb: function (args) {
         let [h, s, v] = args

@@ -1,6 +1,6 @@
 <template>
   <div id="register">
-    <el-button  @click="open_login_box()" id="login_button">Login</el-button>
+    <el-button  @click="open_login_box()" id="login_button">登录</el-button>
 
     <el-dialog v-model="toggle">
       <el-form :model="form">
@@ -18,8 +18,8 @@
       </div>
 
       <div slot="footer" class="dialog-footer">
-        <el-button @click="close_login_box()">Cancel</el-button>
-        <el-button type="primary" @click="login()">Confirm</el-button>
+        <el-button @click="close_login_box()">取消</el-button>
+        <el-button type="primary" @click="login()">确认</el-button>
       </div>
     </el-dialog>
   </div>
@@ -50,7 +50,10 @@
       },
 
       login () {
-        this.$store.dispatch('login', {username: this.form.username, password: this.form.password, isTeacher: this.radio === '1'})
+        this.$stash.username = this.form.username
+        this.$stash.isTeacher = this.radio === '1'
+        this.$stash.is_logged_in = true
+//        this.$store.dispatch('login', {username: this.form.username, password: this.form.password, isTeacher: this.radio === '1'})
         this.toggle = false
       }
     }

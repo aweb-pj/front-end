@@ -21,7 +21,7 @@
     },
     computed: {
       is_logged_in () {
-        return this.$store.state.is_logged_in
+        return this.$stash.is_logged_in
       }
     },
     name: 'entry-view'

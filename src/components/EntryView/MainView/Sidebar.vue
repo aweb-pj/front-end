@@ -92,6 +92,7 @@
 <script>
   import { mapGetters } from 'vuex'
   import _ from 'lodash'
+  import EventBus from '../../../EventBus'
 
   export default {
     name: 'sidebar',
@@ -133,7 +134,7 @@
           let answerResults = answerResultsResponse.data
           _.forEach(that.nodeColors, function (nodeColor, key) {
             nodeColor.previous = that.jm.mind.nodes[key]._data.view.element.style.backgroundColor
-            let val = answerResults[key] * 100
+            let val = 100 - (answerResults[key] * 100)
             that.jm.mind.nodes[key]._data.view.element.style.backgroundColor = that.hsv2rgb(that.num2hsv(val))
           })
           that.jm.disable_edit()
@@ -158,7 +159,8 @@
         }
         let question = _.cloneDeep(this.choiceForm)
         question.answer = answerArrToStr(question.answer)
-        this.$store.dispatch('put_question', {nodeId: this.selectedNodeId, question: question})
+        EventBus.$emit('add_question', question)
+//        this.$store.dispatch('put_question', {nodeId: this.selectedNodeId, question: question})
         this.choiceVisible = false
       },
       async save_mindmap () {
