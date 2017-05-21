@@ -118,18 +118,45 @@
         this.saveHomework()
       },
       async sendAnswers () {
-        let answer = _.map(this.homework.questions, (q) => {
-          let solutions = q.solution
-          let resultArr = []
-          _.forEach(solutions, (value, key) => {
-            if (value === true) {
-              resultArr.push(key)
-            }
-          })
-          return _.join(resultArr.sort(), '')
-        })
-        console.log(answer)
-        await this.$http.post(_.join([this.$stash.AWEB_SERVER_ADDR, 'node', this.selectedNodeId, 'answer', this.username], '/'), {answer: answer})
+        try {
+          let hasSendedResponse = await this.$http.get(_.join([this.$stash.AWEB_SERVER_ADDR, 'node', this.selectedNodeId, 'answer', this.username, 'status'], '/'))
+          let hasSendedData = hasSendedResponse.data
+          let hasSended = hasSendedData.status
+          if (hasSended) {
+            this.$alert('不能重复提交！', '失败', {
+              confirmButtonText: '确定',
+              callback: action => {
+//              this.$message({
+//                type: 'info',
+//                message: `action: ${ action }`
+//              });
+              }
+            })
+          } else {
+            let answer = _.map(this.homework.questions, (q) => {
+              let solutions = q.solution
+              let resultArr = []
+              _.forEach(solutions, (value, key) => {
+                if (value === true) {
+                  resultArr.push(key)
+                }
+              })
+              return _.join(resultArr.sort(), '')
+            })
+            console.log(answer)
+            await this.$http.post(_.join([this.$stash.AWEB_SERVER_ADDR, 'node', this.selectedNodeId, 'answer', this.username], '/'), {answer: answer})
+            this.$alert('提交成功！', '提示', {
+              confirmButtonText: '确定',
+              callback: action => {
+//              this.$message({
+//                type: 'info',
+//                message: `action: ${ action }`
+//              });
+              }
+            })
+          }
+        } catch (e) {
+        }
       }
     }
   }

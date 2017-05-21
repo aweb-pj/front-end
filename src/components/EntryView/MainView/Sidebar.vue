@@ -83,7 +83,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="shortAnswerVisible = false">取 消</el-button>
-        <el-button type="primary" @click="shortAnswerVisible = false">确 定</el-button>
+        <el-button type="primary" @click="addTextQuestion()">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -162,10 +162,36 @@
         EventBus.$emit('add_question', question)
 //        this.$store.dispatch('put_question', {nodeId: this.selectedNodeId, question: question})
         this.choiceVisible = false
+        let initialChoiceForm = {
+          question: '',
+          A: '',
+          B: '',
+          C: '',
+          D: '',
+          answer: [],
+          choice: true
+        }
+        this.choiceForm = Object.assign({}, this.choiceForm, initialChoiceForm)
       },
+      addTextQuestion () {
+        let question = _.cloneDeep(this.shortAnswerForm)
+        EventBus.$emit('add_question', question)
+        this.shortAnswerVisible = false
+        this.shortAnswerForm.question = ''
+      },
+
       async save_mindmap () {
         try {
           await (this.$http.post('http://localhost:1234/tree', {nodesKeys: _.keys(this.jm.mind.nodes), data: this.jm.get_data()}))
+          this.$alert('保存成功!', '提示', {
+            confirmButtonText: '确定',
+            callback: action => {
+//              this.$message({
+//                type: 'info',
+//                message: `action: ${ action }`
+//              });
+            }
+          })
         } catch (e) {
           console.log(e)
         }
