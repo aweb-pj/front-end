@@ -12,12 +12,12 @@
             </div>
           </el-tab-pane>
           <el-tab-pane :label="tabs[1].title" :name="tabs[1].name" v-if="selectedNodeId !== null">
-            <div class="tabContent">
+            <div class="tabContent" v-if="menu_index === '1'">
               <homework :selectedNodeId="selectedNodeId"></homework>
             </div>
           </el-tab-pane>
           <el-tab-pane :label="tabs[2].title" :name="tabs[2].name" v-if="selectedNodeId !== null">
-            <div class="tabContent">
+            <div class="tabContent"v-if="menu_index === '2'">
               <material :selectedNodeId="selectedNodeId"></material>
             </div>
           </el-tab-pane>
@@ -38,7 +38,7 @@
   import Barrage from './MainView/Barrage.vue'
   import Homework from './MainView/Homework.vue'
   import Material from './MainView/Material.vue'
-
+  import { mapGetters } from 'vuex'
   export default {
     name: 'main-view',
     stash: ['jm'],
@@ -71,14 +71,18 @@
         } catch (e) {
           return null
         }
-      }
+      },
+      ...mapGetters([
+        'menu_index'
+      ])
     },
     methods: {
       async click_tab (tab) {
         let index = tab.index
         this.$store.dispatch('change_menu', index)
         if (index === '1') {
-          await this.$store.dispatch('get_homework', this.selectedNodeId)
+//          await this.$store.dispatch('get_homework', this.selectedNodeId)
+//          await (new HomeworkHelper(this.$stash)).get_homework(this.selectedNodeId)
         } else if (index === '2') {
           await this.$store.dispatch('get_material', this.selectedNodeId)
         }

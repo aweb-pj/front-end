@@ -1,24 +1,27 @@
 <template>
   <div>
-    <draggable v-model="questions">
-      <div class="card" v-for="(question, index) in questions" :key="question.question">
+    <div v-if="homework !== undefined">
+    <draggable v-model="homework.questions">
+      <div class="card" v-for="(question, index) in homework.questions" :key="question.question">
         <el-card>
           <div class="title clearfix">
             <span class="questionTitle">{{question.question}}</span>
             <el-button @click="deleteQuestion(index)" style="float: right">删除</el-button>
           </div>
-          <el-checkbox-group v-if="question.choice">
-            <el-checkbox :label="question.A" v-model="h"></el-checkbox>
-            <el-checkbox :label="question.B" ></el-checkbox>
-            <el-checkbox :label="question.C"></el-checkbox>
-            <el-checkbox :label="question.D"></el-checkbox>
-          </el-checkbox-group>
+          <div v-if="question.solution !== undefined && question.choice" >
+              <el-checkbox :label="question.A"></el-checkbox>
+              <el-checkbox :label="question.B"></el-checkbox>
+              <el-checkbox :label="question.C"></el-checkbox>
+              <el-checkbox :label="question.D"></el-checkbox>
+          </div>
+
           <textarea class="fixedSize" v-else></textarea>
         </el-card>
         <div class="padding">
         </div>
       </div>
     </draggable>
+    </div>
     <div class="card">
       <div class="button">
         <el-button type="primary" @click="saveHomework()">保存</el-button>
@@ -32,38 +35,50 @@
 
 <script>
   import draggable from 'vuedraggable'
+  import _ from 'lodash'
 
   export default {
     name: 'homework',
     props: ['selectedNodeId'],
+    stash: ['isTeacher'],
     components: {
       draggable
     },
     data () {
       return {
-        h: true
+        homework: {publish: false, questions: []}
       }
     },
-    computed: {
-      questions: {
-        get () {
-          try {
-            return this.$store.state.homework[this.selectedNodeId].questions
-          } catch (e) {
-            return []
-          }
-        },
-        set (questions) {
-          this.$store.dispatch('update_questions', {nodeId: this.selectedNodeId, questions: questions})
-        }
+    async mounted () {
+      let that = this
+      let response = await this.$http.get(_.join([this.$stash.AWEB_SERVER_ADDR, 'node', this.selectedNodeId, 'homework'], '/'))
+      this.homework = Object.assign({}, this.homework, response.data)
+      if (!that.isTeacher) {
+        _.forEach(this.homework.questions, function (question) {
+          question.solution = {A: false, B: false, C: false, D: false}
+        })
       }
     },
+
     methods: {
+      print () {
+        alert('fuck')
+      },
       deleteQuestion (index) {
-        this.$store.dispatch('delete_question', {nodeId: this.selectedNodeId, index: index})
+        this.homework.questions.splice(index, 1)
       },
       async saveHomework () {
-        this.$store.dispatch('save_homework', this.selectedNodeId)
+        try {
+          let that = this
+          let homeworkToSave = _.cloneDeep(that.homework)
+          if (!that.isTeacher) {
+            _.forEach(homeworkToSave.questions, function (question) {
+              _.unset(question, 'solution')
+            })
+          }
+          await this.$http.post(_.join([this.$stash.AWEB_SERVER_ADDR, 'node', this.selectedNodeId, 'homework'], '/'), homeworkToSave)
+        } catch (e) {
+        }
       },
       async publishHomework () {
         // TODO

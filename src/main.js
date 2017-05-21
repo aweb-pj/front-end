@@ -26,6 +26,7 @@ new Vue({
       jm: null,
       nodeColors: {},
       homework: {},
+      AWEB_SERVER_ADDR: 'http://localhost:1234',
       hsv2rgb: function (args) {
         let [h, s, v] = args
         let rgb = []

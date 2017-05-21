@@ -27,7 +27,7 @@ const state = {
   account: '',
   message_history: [],
   homework: {},
-  menu_index: 0,
+  menu_index: '0',
   delete_node_id: -1,
   material: {},
   isTeacher: false

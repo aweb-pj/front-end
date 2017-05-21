@@ -1,4 +1,4 @@
 build/*.js
 config/*.js
-/src/components/MindMap/jsmind/
+/src/components/EntryView/MainView/MindMap/jsmind/
 /src/vue-stash/
