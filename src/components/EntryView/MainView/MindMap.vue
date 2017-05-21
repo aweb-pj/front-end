@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-row :gutter="20" v-if="selectedNodeId !== null">
+    <el-row :gutter="20" v-if="selectedNodeId !== null && isTeacher">
       <el-col :span="3">
         <div>
           <el-dropdown @command="handleAddNodeDropdown">
@@ -31,7 +31,6 @@
     </el-row>
 
     <div id="jsmind_container"></div>
-    <div v-if="isTeacher">
     <el-dialog title="新增结点" v-model="formVisible">
       <el-form ref="form" :model="form" label-width="80px">
         <el-form-item label="结点id">
@@ -54,7 +53,6 @@
         <el-button type="primary" @click="modifyColor">确 定</el-button>
       </div>
     </el-dialog>
-    </div>
   </div>
 </template>
 
