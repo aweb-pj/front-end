@@ -29,6 +29,10 @@
         </div>
       </el-col>
     </el-row>
+    <ul v-if="statVisible">
+      <p>结点颜色（从红到绿）表示正确率（从低到高）0 ~ 100%</p>
+      <li :style="{'background-color': shade}" v-for="(shade, index) in exampleColors" :key="shade"> {{ Math.round(index * 3.3) + 4 }} </li>
+    </ul>
 
     <div id="jsmind_container"></div>
     <el-dialog title="新增结点" v-model="formVisible">
@@ -62,6 +66,7 @@
   import jsMind from './MindMap/jsmind/js/jsmind.js'
   import jsMindDraggable from './MindMap/jsmind/js/jsmind.draggable.js'
   import _ from 'lodash'
+  import exampleColors from '../../../lib/exampleColors.js'
 
   export default {
     name: 'mind-map',
@@ -77,17 +82,21 @@
         },
         colorVisible: false,
         color: 'rgba(0, 0, 0, 1)',
-        colorType: -1
+        colorType: -1,
+        exampleColors: exampleColors
       }
     },
-    stash: ['jm', 'isTeacher'],
+    stash: ['jm', 'isTeacher', 'statVisible'],
     async mounted () {
       let that = this
       let AWEB_SERVER_ADDR = that.$stash.AWEB_SERVER_ADDR
       let options = {
         container: 'jsmind_container',
         editable: true,
-        theme: 'orange'
+        theme: 'orange',
+        shortcut: {
+          enable: false        // 是否启用快捷键
+        }
       }
       let mind = null
       jsMindDraggable(jsMind)
@@ -198,4 +207,11 @@
 
 </script>
 <style scoped>
+  li {
+    display: block;
+    float: left;
+    width: 30px;
+    height: 30px;
+    margin: 1px;
+  }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="files.length > 0">
+    <div v-if="files !== undefined && files.length > 0">
       <draggable v-model="files" v-if="isTeacher">
         <div @click="openFrame(file)" v-for="(file, index) in files" :key="file">
           <el-card>
@@ -83,7 +83,7 @@
       },
       viewURL: function () {
         let that = this
-        let serverUrl = _.join([that.$stash.AWEB_SERVER_ADDR, 'node', this.selectedNodeId, 'material' + this.selectedFile], '/')
+        let serverUrl = _.join([that.$stash.AWEB_SERVER_ADDR, 'node', this.selectedNodeId, 'material', this.selectedFile], '/')
         if (this.selectedFile.search(/.+\.(ppt|pptx|doc|docx|xls|xlsx)/g) !== -1) {
           return 'https://view.officeapps.live.com/op/view.aspx?src=' + serverUrl
         } else {

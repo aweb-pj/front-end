@@ -77,23 +77,29 @@
     },
     created () {
       let that = this
+//      console.log('created: ', that.selectedNodeId)
       EventBus.$on('add_question', function (question) {
+//        console.log(that.selectedNodeId)
         that.homework.questions.push(question)
+//        console.log(that.selectedNodeId)
       })
     },
 
     async mounted () {
       let that = this
-      let response = await this.$http.get(_.join([this.$stash.AWEB_SERVER_ADDR, 'node', this.selectedNodeId, 'homework'], '/'))
-      this.homework = Object.assign({}, this.homework, response.data)
-      if (!that.isTeacher) {
-        _.forEach(this.homework.questions, function (question) {
-          question.solution = {A: false, B: false, C: false, D: false}
-        })
+      try {
+        let response = await that.$http.get(_.join([that.$stash.AWEB_SERVER_ADDR, 'node', that.selectedNodeId, 'homework'], '/'))
+        that.homework = Object.assign({}, that.homework, response.data)
+        if (!that.isTeacher) {
+          _.forEach(that.homework.questions, function (question) {
+            question.solution = {A: false, B: false, C: false, D: false}
+          })
+        }
+      } catch (e) {
       }
-      setInterval(function () {
-        that.$forceUpdate()
-      }, 100)
+//      setInterval(function () {
+//        that.$forceUpdate()
+//      }, 100)
     },
 
     methods: {
@@ -101,16 +107,16 @@
         this.homework.questions.splice(index, 1)
       },
       async saveHomework () {
+        let that = this
         try {
-          let that = this
           let homeworkToSave = _.cloneDeep(that.homework)
           if (!that.isTeacher) {
             _.forEach(homeworkToSave.questions, function (question) {
               _.unset(question, 'solution')
             })
           }
-          await this.$http.post(_.join([this.$stash.AWEB_SERVER_ADDR, 'node', this.selectedNodeId, 'homework'], '/'), homeworkToSave)
-          this.$alert('保存成功！', '提示', {
+          await that.$http.post(_.join([this.$stash.AWEB_SERVER_ADDR, 'node', that.selectedNodeId, 'homework'], '/'), homeworkToSave)
+          that.$alert('保存成功！', '提示', {
             confirmButtonText: '确定',
             callback: action => {
             }

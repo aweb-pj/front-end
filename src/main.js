@@ -30,6 +30,7 @@ new Vue({
       isTeacher: true,
       is_logged_in: false,
       AWEB_SERVER_ADDR: 'https://aweb.jtwang.me',
+      statVisible: false,
       hsv2rgb: function (args) {
         let [h, s, v] = args
         let rgb = []

@@ -96,7 +96,7 @@
 
   export default {
     name: 'sidebar',
-    stash: ['jm', 'nodeColors', 'hsv2rgb', 'num2hsv', 'isTeacher'],
+    stash: ['jm', 'nodeColors', 'hsv2rgb', 'num2hsv', 'isTeacher', 'statVisible'],
     props: ['selectedNodeId'],
     data () {
       return {
@@ -124,7 +124,12 @@
     },
     methods: {
       async toggleStatistics (newState) {
+        function percentageToHsl (percentage, hue0, hue1) {
+          let hue = (percentage * (hue1 - hue0)) + hue0
+          return 'hsl(' + hue + ', 100%, 50%)'
+        }
         let that = this
+        that.statVisible = newState
         if (newState === true) {
           that.nodeColors = {}
           _.forEach(Object.keys(that.jm.mind.nodes), (key) => {
@@ -133,9 +138,12 @@
           let answerResultsResponse = await that.$http.get(_.join([that.$stash.AWEB_SERVER_ADDR, 'stat'], '/'))
           let answerResults = answerResultsResponse.data
           _.forEach(that.nodeColors, function (nodeColor, key) {
-            nodeColor.previous = that.jm.mind.nodes[key]._data.view.element.style.backgroundColor
-            let val = 100 - (answerResults[key] * 100)
-            that.jm.mind.nodes[key]._data.view.element.style.backgroundColor = that.hsv2rgb(that.num2hsv(val))
+            if ((!_.isUndefined(answerResults[key])) && (!_.isNull(answerResults[key]))) {
+              nodeColor.previous = that.jm.mind.nodes[key]._data.view.element.style.backgroundColor
+              let val = answerResults[key]
+//            that.jm.mind.nodes[key]._data.view.element.style.backgroundColor = that.hsv2rgb(that.num2hsv(val))
+              that.jm.mind.nodes[key]._data.view.element.style.backgroundColor = percentageToHsl(val, 0, 120)
+            }
           })
           that.jm.disable_edit()
           this.$notify.info({
