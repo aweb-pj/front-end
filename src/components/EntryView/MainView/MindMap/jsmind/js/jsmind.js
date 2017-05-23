@@ -1661,6 +1661,21 @@ export default (function(){
             }
         },
 
+        set_show_data:function(nodeid, value){
+            var node = this.mind.get_node(nodeid);
+            node.data['show-stat'] = value;
+        },
+
+        set_stat_color:function(nodeid, color){
+            var node = this.mind.get_node(nodeid);
+            if(!!node){
+                if(!!color){
+                    node.data['stat-color'] = color;
+                }
+                this.view.reset_node_custom_style(node);
+            }
+        },
+
         set_node_font_style:function(nodeid, size, weight, style){
             if(this.get_editable()){
                 var node = this.mind.get_node(nodeid);
@@ -2699,8 +2714,14 @@ export default (function(){
         },
 
         _reset_node_custom_style:function(node_element, node_data){
-            if('background-color' in node_data){
-                node_element.style.backgroundColor = node_data['background-color'];
+            if(!'show-stat' in node_data || !node_data['show-stat']) {
+                if('background-color' in node_data){
+                    node_element.style.backgroundColor = node_data['background-color'];
+                }
+            } else {
+                if('stat-color' in node_data){
+                    node_element.style.backgroundColor = node_data['stat-color'];
+                }
             }
             if('foreground-color' in node_data){
                 node_element.style.color = node_data['foreground-color'];
