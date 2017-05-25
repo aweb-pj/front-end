@@ -93,6 +93,8 @@
   import { mapGetters } from 'vuex'
   import _ from 'lodash'
   import EventBus from '../../../EventBus'
+  import meld from 'meld'
+  import jsMind from './MindMap/jsmind/js/jsmind'
 
   export default {
     name: 'sidebar',
@@ -114,7 +116,8 @@
         shortAnswerVisible: false,
         shortAnswerForm: {
           question: ''
-        }
+        },
+        meldRemover: null
       }
     },
     computed: {
@@ -124,11 +127,13 @@
     },
     methods: {
       async toggleStatistics (newState) {
+        let that = this
+
         function percentageToHsl (percentage, hue0, hue1) {
           let hue = (percentage * (hue1 - hue0)) + hue0
           return 'hsl(' + hue + ', 100%, 50%)'
         }
-        let that = this
+
         that.statVisible = newState
         if (newState === true) {
           that.nodeColors = {}
@@ -137,6 +142,7 @@
           })
           let answerResultsResponse = await that.$http.get(_.join([that.$stash.AWEB_SERVER_ADDR, 'stat'], '/'))
           let answerResults = answerResultsResponse.data
+
           _.forEach(that.nodeColors, function (nodeColor, key) {
             if ((!_.isUndefined(answerResults[key])) && (!_.isNull(answerResults[key]))) {
               nodeColor.previous = that.jm.mind.nodes[key]._data.view.element.style.backgroundColor
@@ -145,11 +151,23 @@
               that.jm.mind.nodes[key]._data.view.element.style.backgroundColor = percentageToHsl(val, 0, 120)
             }
           })
+
+          that.meldRemover = meld.on(jsMind.view_provider.prototype, 'reset_node_custom_style', function (node) {
+            if (_.has(that.nodeColors, node.id)) {
+              if ((!_.isUndefined(answerResults[node.id])) && (!_.isNull(answerResults[node.id]))) {
+                let val = answerResults[node.id]
+                that.jm.mind.nodes[node.id]._data.view.element.style.backgroundColor = percentageToHsl(val, 0, 120)
+              }
+            }
+          })
           that.jm.disable_edit()
           this.$notify.info({
             message: '进入显示正确率状态，思维导图编辑功能已关闭'
           })
         } else {
+          if (!_.isNull(that.meldRemover)) {
+            that.meldRemover.remove()
+          }
           _.forEach(that.nodeColors, (nodeColor, key) => {
             if (_.has(nodeColor, 'previous')) {
               that.jm.mind.nodes[key]._data.view.element.style.backgroundColor = nodeColor.previous
@@ -190,15 +208,15 @@
 
       async save_mindmap () {
         let that = this
+        if (that.statVisible) {
+          that.toggleStatistics(false)
+        }
+
         try {
           await (that.$http.post(_.join([that.$stash.AWEB_SERVER_ADDR, 'tree'], '/'), {nodesKeys: _.keys(that.jm.mind.nodes), data: that.jm.get_data()}))
-          this.$alert('保存成功!', '提示', {
+          that.$alert('保存成功!', '提示', {
             confirmButtonText: '确定',
             callback: action => {
-//              this.$message({
-//                type: 'info',
-//                message: `action: ${ action }`
-//              });
             }
           })
         } catch (e) {
