@@ -1,7 +1,10 @@
 <template>
   <div id="barrage_wrapper">
     <ul id="messages">
-      <li v-for="message in message_history" v-bind:style="{backgroundColor: message.bg_color}" @click="clickPlusOne(message.id)">{{ message.content }}</li>
+      <div v-for="message in message_history">
+        <li v-bind:style="{backgroundColor: message.bg_color}">{{ message.content }}</li>
+        <li><img src="../../../assets/like.png" @click="clickPlusOne(message.id)"></li>
+      </div>
     </ul>
     <form action="">
       <textarea v-model="message_content" @keydown.enter="send" @keyup.enter="clear" name="message-to-send" id="message-to-send" placeholder ="输入弹幕" rows="3"></textarea>
@@ -62,9 +65,10 @@
   form textarea { border: 0; padding: 10px; width: 90%; margin-right: .5%; resize: none; }
   form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
   #messages { list-style-type: none; margin: 0; padding: 0; }
-  #messages li { padding: 5px 10px; }
+  #messages li { padding: 5px 10px; word-wrap:break-word; word-break:break-all;min-height: 3%}
   #messages li:nth-child(odd) { background: #eee; }
   #messages { margin-bottom: 40px }
+  #messages img {width: 8%; float: right}
 
 
   /*textarea {*/
