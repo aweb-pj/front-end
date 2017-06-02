@@ -31,7 +31,8 @@ const state = {
   delete_node_id: -1,
   material: {},
   isTeacher: false,
-  displayBarrage: false
+  displayBarrage: false,
+  reports: []
 }
 
 const mutations = {
@@ -129,6 +130,9 @@ const mutations = {
   },
   DISPLAY_BARRAGE (state, newState) {
     state.displayBarrage = newState
+  },
+  SAVE_REPORTS (state, {nodeId, val}) {
+    state.reports[nodeId] = val
   }
 }
 
@@ -266,6 +270,10 @@ const actions = {
 
   display_barrage ({commit}, newState) {
     commit('DISPLAY_BARRAGE', newState)
+  },
+
+  save_reports ({commit}, {nodeId, val}) {
+    commit('SAVE_REPORTS', {nodeId, val})
   }
 }
 
@@ -300,6 +308,9 @@ export default new Vuex.Store({
     },
     display_barrage () {
       return state.displayBarrage
+    },
+    reports () {
+      return state.reports
     }
   },
 

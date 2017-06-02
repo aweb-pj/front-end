@@ -33,7 +33,7 @@
       <!--<p>结点颜色（从红到绿）表示正确率（从低到高）0 ~ 100%</p>-->
       <!--<li class="justexample" :style="{'background-color': shade}" v-for="(shade, index) in exampleColors" :key="shade"> {{ Math.round(index * 3.3) + 4 }} </li>-->
     <!--</ul>-->
-    <span v-if="statVisible && selectedNodeId !== null">正确人数: 总人数: 正确率:</span>
+    <img src='../../../assets/color.png' v-if="statVisible"><span v-if="statVisible && selectedNodeId !== null">正确人数:{{reports[selectedNodeId]}},总人数:,正确率:</span>
 
     <div id="jsmind_container"></div>
     <el-dialog title="新增结点" v-model="formVisible">
@@ -68,6 +68,7 @@
   import jsMindDraggable from './MindMap/jsmind/js/jsmind.draggable.js'
   import _ from 'lodash'
   import exampleColors from '../../../lib/exampleColors.js'
+  import { mapGetters } from 'vuex'
 
   export default {
     name: 'mind-map',
@@ -86,6 +87,11 @@
         colorType: -1,
         exampleColors: exampleColors
       }
+    },
+    computed: {
+      ...mapGetters([
+        'reports'
+      ])
     },
     stash: ['jm', 'isTeacher', 'statVisible'],
     async mounted () {

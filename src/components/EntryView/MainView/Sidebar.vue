@@ -157,11 +157,10 @@
             if ((!_.isUndefined(answerResults[key])) && (!_.isNull(answerResults[key]))) {
               nodeColor.previous = that.jm.mind.nodes[key]._data.view.element.style.backgroundColor
               let val = answerResults[key]
-              console.log(val)
-//            that.jm.mind.nodes[key]._data.view.element.style.backgroundColor = that.hsv2rgb(that.num2hsv(val))
-//              that.jm.mind.nodes[key]._data.view.element.style.backgroundColor = percentageToHsl(val, 0, 120)
-              that.jm.set_show_data(that.jm.mind.nodes[key].id, true)
-              that.jm.set_stat_color(that.jm.mind.nodes[key].id, percentageToHsl(val, 0, 120), null)
+              let nodeId = that.jm.mind.nodes[key].id
+              that.$store.dispatch('save_reports', {nodeId, val})
+              that.jm.set_show_data(nodeId, true)
+              that.jm.set_stat_color(nodeId, percentageToHsl(val, 0, 120), null)
             }
           })
 
