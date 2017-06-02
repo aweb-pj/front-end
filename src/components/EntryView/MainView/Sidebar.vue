@@ -8,18 +8,20 @@
             <template slot="title"></template>
             <el-menu-item index="1-1" @click="save_mindmap" v-if="isTeacher">保存思维导图</el-menu-item>
           </el-menu-item-group>
-          <el-menu-item-group title="">
+          <el-menu-item-group>
             <el-menu-item index="1-2">
               作业正确率
               <el-switch v-model="statisticsVisible" on-color="#13ce66" off-color="#ff4949" @change="toggleStatistics">
-                </el-switch>
-                </el-menu-item>
-
+              </el-switch>
+            </el-menu-item>
           </el-menu-item-group>
-          <!--<el-submenu index="1-4">-->
-            <!--<template slot="title">选项4</template>-->
-            <!--&lt;!&ndash;<el-menu-item index="1-4-1">选项1</el-menu-item>&ndash;&gt;-->
-          <!--</el-submenu>-->
+          <el-menu-item-group>
+            <el-menu-item index="1-3">
+              弹幕
+              <el-switch v-model="barrageVisible" on-color="#13ce66" off-color="#ff4949" @change="toggleBarrage">
+              </el-switch>
+            </el-menu-item>
+          </el-menu-item-group>
         </el-submenu>
       </el-menu>
     </div>
@@ -103,6 +105,7 @@
     data () {
       return {
         statisticsVisible: false,
+        barrageVisible: false,
         choiceVisible: false,
         choiceForm: {
           question: '',
@@ -184,6 +187,9 @@
             message: '退出显示正确率状态，思维导图编辑功能已启用'
           })
         }
+      },
+      toggleBarrage (newState) {
+        this.$store.dispatch('display_barrage', newState)
       },
       addChoiceQuestion () {
         let answerArrToStr = function (answerArr) {

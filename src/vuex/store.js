@@ -30,7 +30,8 @@ const state = {
   menu_index: '0',
   delete_node_id: -1,
   material: {},
-  isTeacher: false
+  isTeacher: false,
+  displayBarrage: false
 }
 
 const mutations = {
@@ -125,6 +126,9 @@ const mutations = {
   },
   DELETE_FILE (state, {nodeId, index}) {
     state.material[nodeId].splice(index, 1)
+  },
+  DISPLAY_BARRAGE (state, newState) {
+    state.displayBarrage = newState
   }
 }
 
@@ -258,6 +262,10 @@ const actions = {
     } catch (error) {
       console.log(error)
     }
+  },
+
+  display_barrage ({commit}, newState) {
+    commit('DISPLAY_BARRAGE', newState)
   }
 }
 
@@ -289,6 +297,9 @@ export default new Vuex.Store({
     },
     isTeacher () {
       return state.isTeacher
+    },
+    display_barrage () {
+      return state.displayBarrage
     }
   },
 

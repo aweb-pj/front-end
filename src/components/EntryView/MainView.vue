@@ -4,7 +4,7 @@
       <el-col :span="3">
         <sidebar :selectedNodeId="selectedNodeId"></sidebar>
       </el-col>
-      <el-col :span="18">
+      <el-col :span="display_barrage ? 18 : 21">
         <el-tabs  v-model="selectedTab" type="card" @tab-click="click_tab">
           <el-tab-pane :label="tabs[0].title" :name="tabs[0].name">
             <div class="tabContent">
@@ -23,7 +23,7 @@
           </el-tab-pane>
         </el-tabs>
       </el-col>
-      <el-col class="barrage" :span="3">
+      <el-col class="barrage" :span="3" v-if="display_barrage">
         <barrage></barrage>
       </el-col>
     </el-row>
@@ -74,6 +74,9 @@
       },
       ...mapGetters([
         'menu_index'
+      ]),
+      ...mapGetters([
+        'display_barrage'
       ])
     },
     methods: {
