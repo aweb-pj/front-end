@@ -207,6 +207,10 @@
 
 </script>
 <style scoped>
+  #jsmind_container {
+    overflow: scroll;
+    max-height: 92%;
+  }
   li.justexample {
     display: block;
     float: left;
