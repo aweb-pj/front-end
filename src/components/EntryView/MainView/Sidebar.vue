@@ -135,6 +135,7 @@
         }
 
         that.statVisible = newState
+        that.jm.mind.selected = null
         if (newState === true) {
           that.nodeColors = {}
           _.forEach(Object.keys(that.jm.mind.nodes), (key) => {
@@ -148,7 +149,9 @@
               nodeColor.previous = that.jm.mind.nodes[key]._data.view.element.style.backgroundColor
               let val = answerResults[key]
 //            that.jm.mind.nodes[key]._data.view.element.style.backgroundColor = that.hsv2rgb(that.num2hsv(val))
-              that.jm.mind.nodes[key]._data.view.element.style.backgroundColor = percentageToHsl(val, 0, 120)
+//              that.jm.mind.nodes[key]._data.view.element.style.backgroundColor = percentageToHsl(val, 0, 120)
+              that.jm.set_show_data(that.jm.mind.nodes[key].id, true)
+              that.jm.set_stat_color(that.jm.mind.nodes[key].id, percentageToHsl(val, 0, 120), null)
             }
           })
 
@@ -168,12 +171,15 @@
           if (!_.isNull(that.meldRemover)) {
             that.meldRemover.remove()
           }
+          that.jm.enable_edit()
           _.forEach(that.nodeColors, (nodeColor, key) => {
             if (_.has(nodeColor, 'previous')) {
-              that.jm.mind.nodes[key]._data.view.element.style.backgroundColor = nodeColor.previous
+//              that.jm.mind.nodes[key]._data.view.element.style.backgroundColor = nodeColor.previous
+              that.jm.set_show_data(that.jm.mind.nodes[key].id, false)
+              that.jm.set_node_color(that.jm.mind.nodes[key].id, nodeColor.previous, null)
             }
           })
-          that.jm.enable_edit()
+//          that.jm.enable_edit()
           this.$notify.info({
             message: '退出显示正确率状态，思维导图编辑功能已启用'
           })
@@ -213,8 +219,18 @@
         }
 
         try {
-          await (that.$http.post(_.join([that.$stash.AWEB_SERVER_ADDR, 'tree'], '/'), {nodesKeys: _.keys(that.jm.mind.nodes), data: that.jm.get_data()}))
-          that.$alert('保存成功!', '提示', {
+          let jm = _.cloneDeep(that.jm)
+          if (!jm.get_editable()) {
+            jm.enable_edit()
+          }
+          _.forEach(that.nodeColors, (nodeColor, key) => {
+            if (_.has(nodeColor, 'previous')) {
+              jm.set_node_color(jm.mind.nodes[key].id, nodeColor.previous, null)
+            }
+          })
+          let treeData = that.statVisible ? jm.get_data() : that.jm.get_data()
+          await (that.$http.post(_.join([that.$stash.AWEB_SERVER_ADDR, 'tree'], '/'), {nodesKeys: _.keys(that.jm.mind.nodes), data: treeData}))
+          this.$alert('保存成功!', '提示', {
             confirmButtonText: '确定',
             callback: action => {
             }
