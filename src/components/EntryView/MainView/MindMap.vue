@@ -218,9 +218,6 @@
     overflow-y: scroll;
     max-height: 94%;
   }
-  .jsmind-inner {
-    overflow: hidden;
-  }
   li.justexample {
     display: block;
     float: left;

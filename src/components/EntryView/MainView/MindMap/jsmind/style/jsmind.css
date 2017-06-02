@@ -1,13 +1,13 @@
 /*
  * Released under BSD License
  * Copyright (c) 2014-2015 hizzgdev@163.com
- * 
+ *
  * Project Home:
  *   https://github.com/hizzgdev/jsmind/
  */
 
 /* important section */
-.jsmind-inner{position:relative;overflow:auto;width:100%;height:100%;}/*box-shadow:0 0 2px #000;*/
+.jsmind-inner{position:relative;width:100%;height:100%;}/*box-shadow:0 0 2px #000;*/
 .jsmind-inner{
     moz-user-select:-moz-none;
     -moz-user-select:none;
