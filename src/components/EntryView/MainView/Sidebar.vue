@@ -5,18 +5,25 @@
         <el-submenu index="1">
           <template slot="title"><i class="el-icon-message"></i>思维导图</template>
           <el-menu-item-group>
-            <template slot="title"></template>
+            <template slot="title">思维导图操作</template>
             <el-menu-item index="1-1" @click="save_mindmap" v-if="isTeacher">保存思维导图</el-menu-item>
+            <el-menu-item index="1-2" v-if="isTeacher">创建思维导图</el-menu-item>
+            <el-menu-item index="1-3" v-if="isTeacher">切换思维导图</el-menu-item>
           </el-menu-item-group>
           <el-menu-item-group>
-            <el-menu-item index="1-2">
+            <template slot="title">作业</template>
+            <el-menu-item index="1-3">
               作业正确率
               <el-switch v-model="statisticsVisible" on-color="#13ce66" off-color="#ff4949" @change="toggleStatistics">
               </el-switch>
             </el-menu-item>
           </el-menu-item-group>
+
+        </el-submenu>
+        <el-submenu index="2">
+          <template slot="title">弹幕</template>
           <el-menu-item-group>
-            <el-menu-item index="1-3">
+            <el-menu-item index="2-1">
               弹幕
               <el-switch v-model="barrageVisible" on-color="#13ce66" off-color="#ff4949" @change="toggleBarrage">
               </el-switch>
