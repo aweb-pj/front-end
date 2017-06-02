@@ -153,11 +153,11 @@
           })
           let answerResultsResponse = await that.$http.get(_.join([that.$stash.AWEB_SERVER_ADDR, 'stat'], '/'))
           let answerResults = answerResultsResponse.data
-
           _.forEach(that.nodeColors, function (nodeColor, key) {
             if ((!_.isUndefined(answerResults[key])) && (!_.isNull(answerResults[key]))) {
               nodeColor.previous = that.jm.mind.nodes[key]._data.view.element.style.backgroundColor
               let val = answerResults[key]
+              console.log(val)
 //            that.jm.mind.nodes[key]._data.view.element.style.backgroundColor = that.hsv2rgb(that.num2hsv(val))
 //              that.jm.mind.nodes[key]._data.view.element.style.backgroundColor = percentageToHsl(val, 0, 120)
               that.jm.set_show_data(that.jm.mind.nodes[key].id, true)
