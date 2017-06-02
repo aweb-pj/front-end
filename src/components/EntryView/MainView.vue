@@ -96,7 +96,7 @@
 </script>
 <style scoped>
   .tabContent {
-    max-height: 92%;
+    max-height: 94%;
   }
   .barrage {
     height: 100%;

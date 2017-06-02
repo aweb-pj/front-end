@@ -208,8 +208,11 @@
 </script>
 <style scoped>
   #jsmind_container {
-    overflow: scroll;
-    max-height: 92%;
+    overflow-y: scroll;
+    max-height: 94%;
+  }
+  .jsmind-inner {
+    overflow: hidden;
   }
   li.justexample {
     display: block;
