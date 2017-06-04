@@ -19,7 +19,7 @@
     name: 'barrage',
     data () {
       return {
-        message_content: '',
+        message_content: ''
 //        border_color: []
       }
     },
