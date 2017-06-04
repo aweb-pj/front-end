@@ -20,7 +20,7 @@
     data () {
       return {
         message_content: '',
-        border_color: []
+//        border_color: []
       }
     },
     computed: {
@@ -62,7 +62,7 @@
           this.message_content = this.message_content.trim()
           this.$store.dispatch('send_message', this.message_content)
           this.message_content = ''
-          this.border_color.unshift({color: 'rgb(0,0,255)', time: Date.parse(new Date())})
+//          this.border_color.unshift({color: 'rgb(0,0,255)', time: Date.parse(new Date())})
         }
       },
 
