@@ -1,7 +1,7 @@
 <template>
   <div id="barrage_wrapper">
     <ul id="messages">
-      <div v-for="(message, index) in message_history" :style="{borderColor: border_color[index].color}">
+      <div v-for="(message, index) in message_history" :style="{borderColor: message.border_color.color}">
         <li v-bind:style="{backgroundColor: message.bg_color}">{{ message.content }}</li>
         <li><img src="../../../assets/like.png" @click="clickPlusOne(message.id)"></li>
       </div>
@@ -31,20 +31,21 @@
 
     mounted () {
       this.$store.dispatch('connect')
-      let that = this
-      setInterval(function () {
-        let now = Date.parse(new Date())
-        let bc = that.border_color
-        for (let i = 0; i < bc.length; i++) {
-          let diff = (now - bc[i].time) / 1000
-          if (diff > 5) {
-            bc[i].color = 'rgb(255,255,255)'
-          } else {
-            let val = 51 * diff
-            bc[i].color = 'rgb(' + val + ',' + val + ',255)'
-          }
-        }
-      }, 10)
+      this.$store.dispatch('time_watcher')
+//      let that = this
+//      setInterval(function () {
+//        let now = Date.parse(new Date())
+//        let bc = that.border_color
+//        for (let i = 0; i < bc.length; i++) {
+//          let diff = (now - bc[i].time) / 1000
+//          if (diff > 5) {
+//            bc[i].color = 'rgb(255,255,255)'
+//          } else {
+//            let val = 51 * diff
+//            bc[i].color = 'rgb(' + val + ',' + val + ',255)'
+//          }
+//        }
+//      }, 10)
     },
 
     methods: {

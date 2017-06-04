@@ -36,6 +36,20 @@ const state = {
 }
 
 const mutations = {
+  INTERVAL (state) {
+    let mh = state.message_history
+    let now = Date.parse(new Date())
+    for (let i = 0; i < mh.length; i++) {
+      let diff = (now - mh[i].border_color.time) / 1000
+      if (diff > 5) {
+        mh[i].border_color.color = 'rgb(255,255,255)'
+      } else {
+        let val = 51 * diff
+        mh[i].border_color.color = 'rgb(' + val + ',' + val + ',255)'
+      }
+    }
+  },
+
   TOGGLE_LOGIN_BOX (state, status) {
     state.login_toggle = status
   },
@@ -155,6 +169,7 @@ const actions = {
       commit('CHANGE_CONNECTION_STATUS', false)
     })
     socket.on('server_message', (message) => {
+      message.border_color = {color: 'rgb(0,0,255)', time: Date.parse(new Date())}
       commit('PUT_MESSAGE', message)
     })
     socket.on('server_click', (id) => {
@@ -170,6 +185,12 @@ const actions = {
   logout ({commit}) {
     localStorage.removeItem('token')
     commit(LOGOUT)
+  },
+
+  time_watcher ({commit}) {
+    setInterval(function () {
+      commit('INTERVAL')
+    }, 10)
   },
 
   send_message ({commit}, content) {
