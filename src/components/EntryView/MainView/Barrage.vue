@@ -1,7 +1,7 @@
 <template>
   <div id="barrage_wrapper">
     <ul id="messages">
-      <div v-for="message in message_history">
+      <div v-for="(message, index) in message_history" :style="{borderColor: border_color[index].color}">
         <li v-bind:style="{backgroundColor: message.bg_color}">{{ message.content }}</li>
         <li><img src="../../../assets/like.png" @click="clickPlusOne(message.id)"></li>
       </div>
@@ -19,7 +19,8 @@
     name: 'barrage',
     data () {
       return {
-        message_content: ''
+        message_content: '',
+        border_color: []
       }
     },
     computed: {
@@ -30,6 +31,20 @@
 
     mounted () {
       this.$store.dispatch('connect')
+      let that = this
+      setInterval(function () {
+        let now = Date.parse(new Date())
+        let bc = that.border_color
+        for (let i = 0; i < bc.length; i++) {
+          let diff = (now - bc[i].time) / 1000
+          if (diff > 5) {
+            bc[i].color = 'rgb(255,255,255)'
+          } else {
+            let val = 51 * diff
+            bc[i].color = 'rgb(' + val + ',' + val + ',255)'
+          }
+        }
+      }, 10)
     },
 
     methods: {
@@ -42,11 +57,11 @@
       send () {
         if (this.message_content.trim() === '') {
           this.message_content = ''
-          return
         } else {
           this.message_content = this.message_content.trim()
           this.$store.dispatch('send_message', this.message_content)
           this.message_content = ''
+          this.border_color.unshift({color: 'rgb(0,0,255)', time: Date.parse(new Date())})
         }
       },
 
@@ -69,15 +84,5 @@
   #messages li:nth-child(odd) { background: #eee; }
   #messages { margin-bottom: 40px }
   #messages img {width: 8%; float: right}
-
-
-  /*textarea {*/
-    /*width: 90%;*/
-    /*border: none;*/
-    /*padding: 10px 20px;*/
-    /*font: 14px/22px "Lato", Arial, sans-serif;*/
-    /*margin-bottom: 10px;*/
-    /*border-radius: 5px;*/
-    /*resize: none;*/
-  /*}*/
+  #messages div {border: 1px solid}
 </style>
