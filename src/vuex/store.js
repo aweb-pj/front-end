@@ -146,6 +146,7 @@ const mutations = {
     state.displayBarrage = newState
   },
   SAVE_REPORTS (state, {nodeId, val}) {
+    val.rate = Math.floor(val.correct / val.total * 100) / 100
     state.reports[nodeId] = val
   }
 }
