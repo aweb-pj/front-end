@@ -7,7 +7,7 @@
           <el-menu-item-group>
             <template slot="title">思维导图操作</template>
             <el-menu-item index="1-1" @click="save_mindmap" v-if="isTeacher">保存思维导图</el-menu-item>
-            <el-menu-item index="1-2" v-if="isTeacher">创建思维导图</el-menu-item>
+            <el-menu-item index="1-2" @click="createMindVisible = true" v-if="isTeacher">创建思维导图</el-menu-item>
             <el-menu-item index="1-3" v-if="isTeacher">切换思维导图</el-menu-item>
           </el-menu-item-group>
           <el-menu-item-group>
@@ -95,15 +95,26 @@
         <el-button type="primary" @click="addTextQuestion()">确 定</el-button>
       </div>
     </el-dialog>
+
+    <el-dialog title="创建思维导图" v-model="createMindVisible" size="tiny">
+      <el-input v-model="newTreeId" placeholder="新导图id"></el-input>
+      <span slot="footer" class="dialog-footer">
+      <el-button @click="closeMindDialog">取 消</el-button>
+      <el-button type="primary" @click="createMind">确 定</el-button>
+    </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+  /* eslint-disable new-cap,camelcase,no-unused-vars */
   import { mapGetters } from 'vuex'
   import _ from 'lodash'
   import EventBus from '../../../EventBus'
   import meld from 'meld'
-  import jsMind from './MindMap/jsmind/js/jsmind'
+  import './MindMap/jsmind/style/jsmind.css'
+  import jsMind from './MindMap/jsmind/js/jsmind.js'
+  import jsMindDraggable from './MindMap/jsmind/js/jsmind.draggable.js'
 
   export default {
     name: 'sidebar',
@@ -127,14 +138,61 @@
         shortAnswerForm: {
           question: ''
         },
-        meldRemover: null
+        meldRemover: null,
+        createMindVisible: false,
+        newTreeId: ''
       }
     },
     computed: {
       ...mapGetters([
         'menu_index'
+      ]),
+      ...mapGetters([
+        'treeIds'
+      ]),
+      ...mapGetters([
+        'cur_treeId'
       ])
     },
+
+    async mounted () {
+      let that = this
+      let AWEB_SERVER_ADDR = that.$stash.AWEB_SERVER_ADDR
+      let options = {
+        container: 'jsmind_container',
+        editable: true,
+        theme: 'orange',
+        shortcut: {
+          enable: false        // 是否启用快捷键
+        }
+      }
+      let mind = null
+      jsMindDraggable(jsMind)
+      try {
+        let response = await this.$http.get(AWEB_SERVER_ADDR + '/tree')
+        let treeIds = response.data
+        _.remove(treeIds, function (e) { return e === '' })
+        if (treeIds.length === 0) {
+          this.jm = jsMind.show(options)
+          this.createMindVisible = true
+        } else {
+          this.$store.dispatch('set_treeIds', treeIds)
+          let default_treeId = treeIds[0]
+          this.$store.dispatch('set_curTreeId', default_treeId)
+          response = await this.$http.get(AWEB_SERVER_ADDR + '/tree/' + default_treeId)
+          mind = response.data
+          if (_.isEmpty(mind)) {
+            this.jm = jsMind.show(options)
+          } else {
+            this.jm = new jsMind(options)
+            this.jm.show(mind)
+          }
+        }
+      } catch (e) {
+        this.jm = jsMind.show(options)
+      }
+    },
+
     methods: {
       async toggleStatistics (newState) {
         let that = this
@@ -241,7 +299,7 @@
             }
           })
           let treeData = that.statVisible ? jm.get_data() : that.jm.get_data()
-          await (that.$http.post(_.join([that.$stash.AWEB_SERVER_ADDR, 'tree'], '/'), {nodesKeys: _.keys(that.jm.mind.nodes), data: treeData}))
+          await (that.$http.post(_.join([that.$stash.AWEB_SERVER_ADDR, 'tree'], '/'), {treeId: this.cur_treeId, nodesKeys: _.keys(that.jm.mind.nodes), data: treeData}))
           this.$alert('保存成功!', '提示', {
             confirmButtonText: '确定',
             callback: action => {
@@ -249,6 +307,21 @@
           })
         } catch (e) {
           console.log(e)
+        }
+      },
+
+      closeMindDialog () {
+        this.createMindVisible = false
+        this.newTreeId = ''
+      },
+
+      async createMind () {
+        this.createMindVisible = false
+        let AWEB_SERVER_ADDR = this.$stash.AWEB_SERVER_ADDR
+        if (this.newTreeId !== '') {
+          let data = { treeId: this.newTreeId, nodesKeys: {}, data: {} }
+          await this.$http.post(AWEB_SERVER_ADDR + '/tree', data)
+          this.newTreeId = ''
         }
       }
     }

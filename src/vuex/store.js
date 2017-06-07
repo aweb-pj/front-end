@@ -32,7 +32,9 @@ const state = {
   material: {},
   isTeacher: false,
   displayBarrage: false,
-  reports: []
+  reports: [],
+  treeIds: [],
+  cur_treeId: ''
 }
 
 const mutations = {
@@ -148,6 +150,12 @@ const mutations = {
   SAVE_REPORTS (state, {nodeId, val}) {
     val.rate = Math.floor(val.correct / val.total * 100) / 100
     state.reports[nodeId] = val
+  },
+  SET_TREEIDS (state, treeIds) {
+    state.treeIds = treeIds
+  },
+  SET_CURTREEID (state, id) {
+    state.cur_treeId = id
   }
 }
 
@@ -296,6 +304,14 @@ const actions = {
 
   save_reports ({commit}, {nodeId, val}) {
     commit('SAVE_REPORTS', {nodeId, val})
+  },
+
+  set_treeIds ({commit}, treeIds) {
+    commit('SET_TREEIDS', treeIds)
+  },
+
+  set_curTreeId ({commit}, id) {
+    commit('SET_CURTREEID', id)
   }
 }
 
@@ -333,6 +349,12 @@ export default new Vuex.Store({
     },
     reports () {
       return state.reports
+    },
+    treeIds () {
+      return state.treeIds
+    },
+    cur_treeId () {
+      return state.cur_treeId
     }
   },
 

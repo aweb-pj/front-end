@@ -97,40 +97,35 @@
       ])
     },
     stash: ['jm', 'isTeacher', 'statVisible'],
-    async mounted () {
-      let that = this
-      let AWEB_SERVER_ADDR = that.$stash.AWEB_SERVER_ADDR
-      let options = {
-        container: 'jsmind_container',
-        editable: true,
-        theme: 'orange',
-        shortcut: {
-          enable: false        // 是否启用快捷键
-        }
-      }
-      let mind = null
-      jsMindDraggable(jsMind)
-
-      try {
-        let response = await this.$http.get(AWEB_SERVER_ADDR + '/tree')
-        mind = response.data
-        if (_.isEmpty(mind)) {
-          this.jm = jsMind.show(options)
-        } else {
-          this.jm = new jsMind(options)
-          this.jm.show(mind)
-        }
-      } catch (e) {
-        this.jm = jsMind.show(options)
-      }
-//      setInterval(async function () {
-//        try {
-//          await (that.$http.post('http://localhost:1234/tree', {nodesKeys: _.keys(that.jm.mind.nodes), data: that.jm.get_data()}))
-//        } catch (e) {
-//          console.log(e)
+//    async mounted () {
+//      let that = this
+//      let AWEB_SERVER_ADDR = that.$stash.AWEB_SERVER_ADDR
+//      let options = {
+//        container: 'jsmind_container',
+//        editable: true,
+//        theme: 'orange',
+//        shortcut: {
+//          enable: false        // 是否启用快捷键
 //        }
-//      }, 100)
-    },
+//      }
+//      let mind = null
+//      jsMindDraggable(jsMind)
+//
+//      try {
+//        let response = await this.$http.get(AWEB_SERVER_ADDR + '/tree')
+//        let treeIds = response.data
+//        if (_.isEmpty(mind) || treeIds.length === 0) {
+//          this.jm = jsMind.show(options)
+//        } else {
+//          this.$store.dispatch('set_treeIds', treeIds)
+//          mind = treeIds[0]
+//          this.jm = new jsMind(options)
+//          this.jm.show(mind)
+//        }
+//      } catch (e) {
+//        this.jm = jsMind.show(options)
+//      }
+//    },
 
     methods: {
       handleAddNodeDropdown (command) {
