@@ -154,6 +154,9 @@ const mutations = {
   SET_TREEIDS (state, treeIds) {
     state.treeIds = treeIds
   },
+  ADD_TREEID (state, id) {
+    state.treeIds.push(id)
+  },
   SET_CURTREEID (state, id) {
     state.cur_treeId = id
   }
@@ -308,6 +311,10 @@ const actions = {
 
   set_treeIds ({commit}, treeIds) {
     commit('SET_TREEIDS', treeIds)
+  },
+
+  add_treeId ({commit}, id) {
+    commit('ADD_TREEID', id)
   },
 
   set_curTreeId ({commit}, id) {

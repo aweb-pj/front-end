@@ -140,7 +140,15 @@
         },
         meldRemover: null,
         createMindVisible: false,
-        newTreeId: ''
+        newTreeId: '',
+        opt: {
+          container: 'jsmind_container',
+          editable: true,
+          theme: 'orange',
+          shortcut: {
+            enable: false        // 是否启用快捷键
+          }
+        }
       }
     },
     computed: {
@@ -158,14 +166,7 @@
     async mounted () {
       let that = this
       let AWEB_SERVER_ADDR = that.$stash.AWEB_SERVER_ADDR
-      let options = {
-        container: 'jsmind_container',
-        editable: true,
-        theme: 'orange',
-        shortcut: {
-          enable: false        // 是否启用快捷键
-        }
-      }
+      let options = this.opt
       let mind = null
       jsMindDraggable(jsMind)
       try {
@@ -319,7 +320,15 @@
         this.createMindVisible = false
         let AWEB_SERVER_ADDR = this.$stash.AWEB_SERVER_ADDR
         if (this.newTreeId !== '') {
+          this.$store.dispatch('add_treeId', this.newTreeId)
+          this.$store.dispatch('set_curTreeId', this.newTreeId)
           let data = { treeId: this.newTreeId, nodesKeys: {}, data: {} }
+          this.jm._reset()
+//          let options = this.opt
+//          this.jm = jsMind.show(options)
+          let response = await this.$http.get(AWEB_SERVER_ADDR + '/tree/test')
+          let mind = response.data
+          this.jm.show(mind)
           await this.$http.post(AWEB_SERVER_ADDR + '/tree', data)
           this.newTreeId = ''
         }
