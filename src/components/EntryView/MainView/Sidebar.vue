@@ -214,7 +214,8 @@
               let nodeId = that.jm.mind.nodes[key].id
               that.$store.dispatch('save_reports', {nodeId, val})
               that.jm.set_show_data(nodeId, true)
-              that.jm.set_stat_color(nodeId, percentageToHsl(val, 0, 120), null)
+              let avg = _.meanBy(val, 'rate')
+              that.jm.set_stat_color(nodeId, percentageToHsl(avg, 0, 120), null)
             }
           })
 

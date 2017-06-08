@@ -148,7 +148,9 @@ const mutations = {
     state.displayBarrage = newState
   },
   SAVE_REPORTS (state, {nodeId, val}) {
-    val.rate = Math.floor(val.correct / val.total * 100) / 100
+    // for (let i = 0; i < val.length; i++) {
+    //   val[i].rate = Math.floor(val[i].correct / val[i].total * 100) / 100
+    // }
     state.reports[nodeId] = val
   },
   SET_TREEIDS (state, treeIds) {

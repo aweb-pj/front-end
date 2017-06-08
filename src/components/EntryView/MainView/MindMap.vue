@@ -33,10 +33,12 @@
       <!--<p>结点颜色（从红到绿）表示正确率（从低到高）0 ~ 100%</p>-->
       <!--<li class="justexample" :style="{'background-color': shade}" v-for="(shade, index) in exampleColors" :key="shade"> {{ Math.round(index * 3.3) + 4 }} </li>-->
     <!--</ul>-->
-    <img src="../../../assets/color.png" v-if="statVisible">
-    <span v-if="statVisible && selectedNodeId !== null && selectedNodeId in reports">
-      正确人数:{{reports[selectedNodeId].correct}},总人数:{{reports[selectedNodeId].total}},正确率:{{reports[selectedNodeId].rate}}
-    </span>
+    <div class="exercise-stat" v-if="statVisible">
+      <img src="../../../assets/color.png" v-if="statVisible"><span>(正确率0-100%颜色分布图)</span>
+      <div v-if="selectedNodeId !== null && selectedNodeId in reports">
+        <p v-for="(v,index) in reports[selectedNodeId]" :key="v">第{{index+1}}题: 正确人数:{{v.correct}}, 总人数:{{v.total}}, 正确率:{{v.rate}}</p>
+      </div>
+    </div>
 
     <div id="jsmind_container"></div>
     <el-dialog title="新增结点" v-model="formVisible">
@@ -222,5 +224,9 @@
     width: 30px;
     height: 30px;
     margin: 1px;
+  }
+
+  div.exercise-stat {
+    border-bottom: 1px solid rgb(209,219,229);
   }
 </style>
