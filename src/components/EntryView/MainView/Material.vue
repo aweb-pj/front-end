@@ -42,6 +42,8 @@
 <script>
   import draggable from 'vuedraggable'
   import _ from 'lodash'
+  import { mapGetters } from 'vuex'
+
   export default {
     name: 'homework',
     props: ['selectedNodeId'],
@@ -66,8 +68,11 @@
       }
     },
     computed: {
+      ...mapGetters([
+        'cur_treeId'
+      ]),
       file_server_addr () {
-        return _.join([this.$stash.AWEB_SERVER_ADDR, 'node', this.selectedNodeId, 'material'], '/')
+        return _.join([this.$stash.AWEB_SERVER_ADDR, 'tree', this.cur_treeId, 'node', this.selectedNodeId, 'material'], '/')
       },
       files: {
         get () {
@@ -83,7 +88,7 @@
       },
       viewURL: function () {
         let that = this
-        let serverUrl = _.join([that.$stash.AWEB_SERVER_ADDR, 'node', this.selectedNodeId, 'material', this.selectedFile], '/')
+        let serverUrl = _.join([that.$stash.AWEB_SERVER_ADDR, 'tree', this.cur_treeId, 'node', this.selectedNodeId, 'material', this.selectedFile], '/')
         if (this.selectedFile.search(/.+\.(ppt|pptx|doc|docx|xls|xlsx)/g) !== -1) {
           return 'https://view.officeapps.live.com/op/view.aspx?src=' + serverUrl
         } else {
@@ -93,7 +98,7 @@
     },
     methods: {
       afterSuccessing (response, file, fileList) {
-        this.$store.commit('PUT_FILE', {nodeId: this.selectedNodeId, file: this.selectedNodeId + '_' + file.name.replace(/\s+/g, '_').toLowerCase()})
+        this.$store.commit('PUT_FILE', {nodeId: this.selectedNodeId, file: this.cur_treeId + '_' + this.selectedNodeId + '_' + file.name.replace(/\s+/g, '_').toLowerCase()})
       },
       deleteFile (index, event) {
         if (event.stopPropagation) {

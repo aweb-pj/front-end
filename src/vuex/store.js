@@ -268,9 +268,9 @@ const actions = {
     commit('DELETE_NODE', id)
   },
 
-  async get_material ({commit}, nodeId) {
+  async get_material ({commit, state}, nodeId) {
     try {
-      let response = await Vue.http.get(AWEB_SERVER_ADDR + '/node/' + nodeId + '/material')
+      let response = await Vue.http.get(AWEB_SERVER_ADDR + '/tree/' + state.cur_treeId + '/node/' + nodeId + '/material')
       let material = response.data
       // let material = ['1.png', '2.txt']
       commit('CLEAN_FILES', nodeId)
@@ -281,9 +281,9 @@ const actions = {
       commit('CLEAN_FILES', nodeId)
     }
   },
-  async update_files ({commit}, {nodeId, files}) {
+  async update_files ({commit, state}, {nodeId, files}) {
     try {
-      await Vue.http.put(AWEB_SERVER_ADDR + '/node/' + nodeId + '/material', {material: files})
+      await Vue.http.put(AWEB_SERVER_ADDR + '/tree/' + state.cur_treeId + '/node/' + nodeId + '/material', {material: files})
       commit('CLEAN_FILES', nodeId)
       _.forEach(files, function (file) {
         commit('PUT_FILE', {nodeId, file})
@@ -294,7 +294,7 @@ const actions = {
   },
   async delete_file ({commit, state}, {nodeId, index}) {
     try {
-      await Vue.http.delete(AWEB_SERVER_ADDR + '/node/' + nodeId + '/material/' + state.material[nodeId][index])
+      await Vue.http.delete(AWEB_SERVER_ADDR + '/tree/' + state.cur_treeId + '/node/' + nodeId + '/material/' + state.material[nodeId][index])
       commit('DELETE_FILE', {nodeId, index})
     } catch (error) {
       console.log(error)

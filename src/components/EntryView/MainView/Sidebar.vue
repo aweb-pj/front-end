@@ -205,7 +205,7 @@
           _.forEach(Object.keys(that.jm.mind.nodes), (key) => {
             that.nodeColors[key] = {}
           })
-          let answerResultsResponse = await that.$http.get(_.join([that.$stash.AWEB_SERVER_ADDR, 'stat'], '/'))
+          let answerResultsResponse = await that.$http.get(_.join([that.$stash.AWEB_SERVER_ADDR, 'tree', this.cur_treeId, 'stat'], '/'))
           let answerResults = answerResultsResponse.data
           _.forEach(that.nodeColors, function (nodeColor, key) {
             if ((!_.isUndefined(answerResults[key])) && (!_.isNull(answerResults[key]))) {

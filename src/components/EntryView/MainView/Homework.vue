@@ -62,6 +62,8 @@
   import draggable from 'vuedraggable'
   import _ from 'lodash'
   import EventBus from '../../../EventBus.js'
+  import { mapGetters } from 'vuex'
+
   export default {
     name: 'homework',
     props: ['selectedNodeId'],
@@ -74,6 +76,11 @@
         check: true,
         homework: {publish: false, questions: []}
       }
+    },
+    computed: {
+      ...mapGetters([
+        'cur_treeId'
+      ])
     },
     created () {
       let that = this
@@ -88,7 +95,7 @@
     async mounted () {
       let that = this
       try {
-        let response = await that.$http.get(_.join([that.$stash.AWEB_SERVER_ADDR, 'node', that.selectedNodeId, 'homework'], '/'))
+        let response = await that.$http.get(_.join([that.$stash.AWEB_SERVER_ADDR, 'tree', this.cur_treeId, 'node', that.selectedNodeId, 'homework'], '/'))
         that.homework = Object.assign({}, that.homework, response.data)
         if (!that.isTeacher) {
           _.forEach(that.homework.questions, function (question) {
@@ -115,7 +122,7 @@
               _.unset(question, 'solution')
             })
           }
-          await that.$http.post(_.join([this.$stash.AWEB_SERVER_ADDR, 'node', that.selectedNodeId, 'homework'], '/'), homeworkToSave)
+          await that.$http.post(_.join([this.$stash.AWEB_SERVER_ADDR, 'tree', this.cur_treeId, 'node', that.selectedNodeId, 'homework'], '/'), homeworkToSave)
           that.$alert('保存成功！', '提示', {
             confirmButtonText: '确定',
             callback: action => {
@@ -135,7 +142,7 @@
       },
       async sendAnswers () {
         try {
-          let hasSendedResponse = await this.$http.get(_.join([this.$stash.AWEB_SERVER_ADDR, 'node', this.selectedNodeId, 'answer', this.username, 'status'], '/'))
+          let hasSendedResponse = await this.$http.get(_.join([this.$stash.AWEB_SERVER_ADDR, 'tree', this.cur_treeId, 'node', this.selectedNodeId, 'answer', this.username, 'status'], '/'))
           let hasSendedData = hasSendedResponse.data
           let hasSended = hasSendedData.status
           if (hasSended) {
@@ -160,7 +167,7 @@
               return _.join(resultArr.sort(), '')
             })
             console.log(answer)
-            await this.$http.post(_.join([this.$stash.AWEB_SERVER_ADDR, 'node', this.selectedNodeId, 'answer', this.username], '/'), {answer: answer})
+            await this.$http.post(_.join([this.$stash.AWEB_SERVER_ADDR, 'tree', this.cur_treeId, 'node', this.selectedNodeId, 'answer', this.username], '/'), {answer: answer})
             this.$alert('提交成功！', '提示', {
               confirmButtonText: '确定',
               callback: action => {
