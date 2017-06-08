@@ -8,12 +8,14 @@
             <template slot="title">思维导图操作</template>
             <el-menu-item index="1-1" @click="save_mindmap" v-if="isTeacher">保存思维导图</el-menu-item>
             <el-menu-item index="1-2" @click="createMindVisible = true" v-if="isTeacher">创建思维导图</el-menu-item>
-            <el-menu-item index="1-3" v-if="isTeacher">切换思维导图</el-menu-item>
+            <el-submenu index="1-3">
+              <template slot="title">切换思维导图</template>
+              <el-menu-item v-for="(id,index) in treeIds" :key="id" :index="'1-3-'+(index+1)" @click="switch_mindmap(id)">{{id}}</el-menu-item>
+            </el-submenu>
           </el-menu-item-group>
           <el-menu-item-group>
-            <template slot="title">作业</template>
+            <template slot="title">作业正确率</template>
             <el-menu-item index="1-3">
-              作业正确率
               <el-switch v-model="statisticsVisible" on-color="#13ce66" off-color="#ff4949" @change="toggleStatistics">
               </el-switch>
             </el-menu-item>
@@ -24,7 +26,6 @@
           <template slot="title">弹幕</template>
           <el-menu-item-group>
             <el-menu-item index="2-1">
-              弹幕
               <el-switch v-model="barrageVisible" on-color="#13ce66" off-color="#ff4949" @change="toggleBarrage">
               </el-switch>
             </el-menu-item>
@@ -316,8 +317,17 @@
           this.$store.dispatch('add_treeId', this.newTreeId)
           this.$store.dispatch('set_curTreeId', this.newTreeId)
           this.jm.show()
-          await this.save_mindmap()
           this.newTreeId = ''
+          await this.save_mindmap()
+        }
+      },
+
+      async switch_mindmap (id) {
+        if (this.cur_treeId !== id) {
+          this.$store.dispatch('set_curTreeId', id)
+          let response = await this.$http.get(this.$stash.AWEB_SERVER_ADDR + '/tree/' + id)
+          let mind = response.data
+          this.jm.show(mind)
         }
       }
     }
