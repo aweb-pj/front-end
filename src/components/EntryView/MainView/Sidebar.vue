@@ -153,12 +153,8 @@
     },
     computed: {
       ...mapGetters([
-        'menu_index'
-      ]),
-      ...mapGetters([
-        'treeIds'
-      ]),
-      ...mapGetters([
+        'menu_index',
+        'treeIds',
         'cur_treeId'
       ])
     },
@@ -174,23 +170,21 @@
         let treeIds = response.data
         _.remove(treeIds, function (e) { return e === '' })
         if (treeIds.length === 0) {
-          this.jm = jsMind.show(options)
-          this.createMindVisible = true
+          that.jm = jsMind.show(options)
+          that.createMindVisible = true
         } else {
-          this.$store.dispatch('set_treeIds', treeIds)
+          that.$store.dispatch('set_treeIds', treeIds)
           let default_treeId = treeIds[0]
-          this.$store.dispatch('set_curTreeId', default_treeId)
-          response = await this.$http.get(AWEB_SERVER_ADDR + '/tree/' + default_treeId)
+          that.$store.dispatch('set_curTreeId', default_treeId)
+          response = await that.$http.get(AWEB_SERVER_ADDR + '/tree/' + default_treeId)
           mind = response.data
-          if (_.isEmpty(mind)) {
-            this.jm = jsMind.show(options)
-          } else {
-            this.jm = new jsMind(options)
-            this.jm.show(mind)
+          that.jm = jsMind.show(options)
+          if (!_.isEmpty(mind)) {
+            that.jm.show(mind)
           }
         }
       } catch (e) {
-        this.jm = jsMind.show(options)
+        that.jm = jsMind.show(options)
       }
     },
 
@@ -318,18 +312,11 @@
 
       async createMind () {
         this.createMindVisible = false
-        let AWEB_SERVER_ADDR = this.$stash.AWEB_SERVER_ADDR
         if (this.newTreeId !== '') {
           this.$store.dispatch('add_treeId', this.newTreeId)
           this.$store.dispatch('set_curTreeId', this.newTreeId)
-          let data = { treeId: this.newTreeId, nodesKeys: {}, data: {} }
-          this.jm._reset()
-//          let options = this.opt
-//          this.jm = jsMind.show(options)
-          let response = await this.$http.get(AWEB_SERVER_ADDR + '/tree/test')
-          let mind = response.data
-          this.jm.show(mind)
-          await this.$http.post(AWEB_SERVER_ADDR + '/tree', data)
+          this.jm.show()
+          await this.save_mindmap()
           this.newTreeId = ''
         }
       }
