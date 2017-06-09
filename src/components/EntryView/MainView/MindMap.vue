@@ -40,7 +40,7 @@
       </div>
     </div>
 
-    <div id="jsmind_container"></div>
+    <div v-show="showMindmap" id="jsmind_container"></div>
     <el-dialog title="新增结点" v-model="formVisible">
       <el-form ref="form" :model="form" label-width="80px">
         <el-form-item label="结点id">
@@ -98,7 +98,7 @@
         'reports'
       ])
     },
-    stash: ['jm', 'isTeacher', 'statVisible'],
+    stash: ['jm', 'isTeacher', 'statVisible', 'showMindmap'],
 //    async mounted () {
 //      let that = this
 //      let AWEB_SERVER_ADDR = that.$stash.AWEB_SERVER_ADDR

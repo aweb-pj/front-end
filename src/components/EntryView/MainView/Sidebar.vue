@@ -119,7 +119,7 @@
 
   export default {
     name: 'sidebar',
-    stash: ['jm', 'nodeColors', 'hsv2rgb', 'num2hsv', 'isTeacher', 'statVisible'],
+    stash: ['jm', 'nodeColors', 'hsv2rgb', 'num2hsv', 'isTeacher', 'statVisible', 'showMindmap'],
     props: ['selectedNodeId'],
     data () {
       return {
@@ -172,7 +172,11 @@
         _.remove(treeIds, function (e) { return e === '' })
         if (treeIds.length === 0) {
           that.jm = jsMind.show(options)
-          that.createMindVisible = true
+          if (that.isTeacher) {
+            that.createMindVisible = true
+          } else {
+            that.showMindmap = false
+          }
         } else {
           that.$store.dispatch('set_treeIds', treeIds)
           let default_treeId = treeIds[0]
