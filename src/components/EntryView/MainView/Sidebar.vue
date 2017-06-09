@@ -123,6 +123,7 @@
     props: ['selectedNodeId'],
     data () {
       return {
+        canSave: true,
         statisticsVisible: false,
         barrageVisible: false,
         choiceVisible: false,
@@ -193,6 +194,17 @@
       }
     },
 
+    watch: {
+      jm: {
+        handler: function (newJm) {
+          if (this.canSave) {
+            this.save_mindmap(false)
+          }
+        },
+        deep: true
+      }
+    },
+
     methods: {
       async toggleStatistics (newState) {
         let that = this
@@ -200,6 +212,9 @@
         function percentageToHsl (percentage, hue0, hue1) {
           let hue = (percentage * (hue1 - hue0)) + hue0
           return 'hsl(' + hue + ', 100%, 50%)'
+        }
+        if (newState === true) {
+          that.canSave = false
         }
 
         that.statVisible = newState
@@ -251,6 +266,7 @@
           this.$notify.info({
             message: '退出显示正确率状态，思维导图编辑功能已启用'
           })
+          that.canSave = true
         }
       },
       toggleBarrage (newState) {
@@ -283,7 +299,7 @@
         this.shortAnswerForm.question = ''
       },
 
-      async save_mindmap () {
+      async save_mindmap (shouldAlert = true) {
         let that = this
         if (that.statVisible) {
           that.toggleStatistics(false)
@@ -301,11 +317,13 @@
           })
           let treeData = that.statVisible ? jm.get_data() : that.jm.get_data()
           await (that.$http.post(_.join([that.$stash.AWEB_SERVER_ADDR, 'tree'], '/'), {treeId: this.cur_treeId, nodesKeys: _.keys(that.jm.mind.nodes), data: treeData}))
-          this.$alert('保存成功!', '提示', {
-            confirmButtonText: '确定',
-            callback: action => {
-            }
-          })
+          if (shouldAlert) {
+            this.$alert('保存成功!', '提示', {
+              confirmButtonText: '确定',
+              callback: action => {
+              }
+            })
+          }
         } catch (e) {
           console.log(e)
         }
@@ -317,6 +335,7 @@
       },
 
       async createMind () {
+        this.canSave = false
         this.createMindVisible = false
         if (this.newTreeId !== '') {
           this.$store.dispatch('add_treeId', this.newTreeId)
@@ -325,15 +344,18 @@
           this.newTreeId = ''
           await this.save_mindmap()
         }
+        this.canSave = true
       },
 
       async switch_mindmap (id) {
+        this.canSave = false
         if (this.cur_treeId !== id) {
           this.$store.dispatch('set_curTreeId', id)
           let response = await this.$http.get(this.$stash.AWEB_SERVER_ADDR + '/tree/' + id)
           let mind = response.data
           this.jm.show(mind)
         }
+        this.canSave = true
       }
     }
   }

@@ -36,7 +36,7 @@
     <div class="exercise-stat" v-if="statVisible">
       <img src="../../../assets/color.png" v-if="statVisible"><span>(正确率0-100%颜色分布图)</span>
       <div v-if="selectedNodeId !== null && selectedNodeId in reports">
-        <p v-for="(v,index) in reports[selectedNodeId]" :key="v">第{{index+1}}题: 正确人数:{{v.correct}}, 总人数:{{v.total}}, 正确率:{{v.rate}}</p>
+        <p v-for="(v,index) in reports[selectedNodeId]" :key="v">第{{index+1}}题: 正确人数:{{v.correct}}, 总人数:{{v.total}}, 正确率:{{(v.rate * 100).toFixed(1) + '%'}}</p>
       </div>
     </div>
 

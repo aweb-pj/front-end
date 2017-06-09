@@ -67,6 +67,9 @@
         selectedFile: ''
       }
     },
+    async mounted () {
+      await this.$store.dispatch('get_material', this.selectedNodeId)
+    },
     computed: {
       ...mapGetters([
         'cur_treeId'

@@ -83,12 +83,12 @@
       async click_tab (tab) {
         let index = tab.index
         this.$store.dispatch('change_menu', index)
-        if (index === '1') {
-//          await this.$store.dispatch('get_homework', this.selectedNodeId)
+//        if (index === '1') {
+//         await this.$store.dispatch('get_homework', this.selectedNodeId)
 //          await (new HomeworkHelper(this.$stash)).get_homework(this.selectedNodeId)
-        } else if (index === '2') {
-          await this.$store.dispatch('get_material', this.selectedNodeId)
-        }
+//        } else if (index === '2') {
+//
+//        }
       }
     }
   }
