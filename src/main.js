@@ -31,6 +31,7 @@ new Vue({
       is_logged_in: false,
       AWEB_SERVER_ADDR: 'https://aweb.jtwang.me',
       statVisible: false,
+      showMindmap: true,
       hsv2rgb: function (args) {
         let [h, s, v] = args
         let rgb = []

@@ -13,7 +13,7 @@
               <el-menu-item v-for="(id,index) in treeIds" :key="id" :index="'1-3-'+(index+1)" @click="switch_mindmap(id)">{{id}}</el-menu-item>
             </el-submenu>
           </el-menu-item-group>
-          <el-menu-item-group>
+          <el-menu-item-group v-if="isTeacher">
             <template slot="title">作业正确率</template>
             <el-menu-item index="1-3">
               <el-switch v-model="statisticsVisible" on-color="#13ce66" off-color="#ff4949" @change="toggleStatistics">
@@ -119,7 +119,7 @@
 
   export default {
     name: 'sidebar',
-    stash: ['jm', 'nodeColors', 'hsv2rgb', 'num2hsv', 'isTeacher', 'statVisible'],
+    stash: ['jm', 'nodeColors', 'hsv2rgb', 'num2hsv', 'isTeacher', 'statVisible', 'showMindmap'],
     props: ['selectedNodeId'],
     data () {
       return {
@@ -173,7 +173,11 @@
         _.remove(treeIds, function (e) { return e === '' })
         if (treeIds.length === 0) {
           that.jm = jsMind.show(options)
-          that.createMindVisible = true
+          if (that.isTeacher) {
+            that.createMindVisible = true
+          } else {
+            that.showMindmap = false
+          }
         } else {
           that.$store.dispatch('set_treeIds', treeIds)
           let default_treeId = treeIds[0]
