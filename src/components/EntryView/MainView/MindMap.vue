@@ -207,7 +207,7 @@
         } else if (this.colorType === 1) {
           this.jm.set_node_color(node.id, null, this.color)
         }
-        this.color = 'black'
+//        this.color = 'black'
       }
     }
   }

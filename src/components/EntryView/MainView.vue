@@ -17,8 +17,13 @@
             </div>
           </el-tab-pane>
           <el-tab-pane :label="tabs[2].title" :name="tabs[2].name" v-if="selectedNodeId !== null">
-            <div class="tabContent"v-if="menu_index === '2'">
+            <div class="tabContent" v-if="menu_index === '2'">
               <material :selectedNodeId="selectedNodeId"></material>
+            </div>
+          </el-tab-pane>
+          <el-tab-pane :label="tabs[3].title" :name="tabs[3].name" v-if="selectedNodeId !== null">
+            <div class="tabContent" v-if="menu_index === '3'">
+
             </div>
           </el-tab-pane>
         </el-tabs>
@@ -55,7 +60,8 @@
         tabs: [
           { title: '思维导图', name: '1' },
           { title: '作业', name: '2' },
-          { title: '课件', name: '3' }
+          { title: '课件', name: '3' },
+          { title: '资源', name: '4' }
         ]
       }
     },

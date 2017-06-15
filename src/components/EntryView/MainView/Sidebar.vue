@@ -46,10 +46,17 @@
         </el-submenu>
       </el-menu>
     </div>
-    <div v-else>
+    <div v-else-if="menu_index == 2">
       <el-menu class="sidebar">
         <el-submenu index="1">
           <template slot="title"><i class="el-icon-setting"></i>课件</template>
+        </el-submenu>
+      </el-menu>
+    </div>
+    <div v-else>
+      <el-menu class="sidebar">
+        <el-submenu index="1">
+          <template slot="title"><i class="el-icon-setting"></i>资源</template>
         </el-submenu>
       </el-menu>
     </div>
