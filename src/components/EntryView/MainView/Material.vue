@@ -19,7 +19,7 @@
       </div>
     </div>
     <div v-else-if="!isTeacher">
-      <p>教师尚未上传课件</p>
+      <!--<p>教师尚未上传课件</p>-->
     </div>
     <div>
       <el-upload

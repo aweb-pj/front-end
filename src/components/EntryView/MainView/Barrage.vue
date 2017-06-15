@@ -93,5 +93,5 @@
   #messages { margin-bottom: 40px }
   #messages li span {font-size: 50%;float: right}
   #messages img {width: 8%; margin-right: 2%; float: right}
-  #messages div {border: 1px solid}
+  #messages div {border: 2px solid}
 </style>

@@ -244,7 +244,7 @@
     watch: {
       jm: {
         handler: function (newJm) {
-          if (this.canSave) {
+          if (this.canSave && this.isTeacher) {
             this.save_mindmap(false)
           }
         },
@@ -276,6 +276,9 @@
           _.forEach(that.nodeColors, function (nodeColor, key) {
             if ((!_.isUndefined(answerResults[key])) && (!_.isNull(answerResults[key]))) {
               nodeColor.previous = that.jm.mind.nodes[key]._data.view.element.style.backgroundColor
+              if (nodeColor.previous === '') {
+                nodeColor.previous = 'rgb(241,196,15)'
+              }
               let val = answerResults[key]
               let nodeId = that.jm.mind.nodes[key].id
               that.$store.dispatch('save_reports', {nodeId, val})
