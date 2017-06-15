@@ -3,7 +3,13 @@
     <ul id="messages">
       <div v-for="(message, index) in message_history" :style="{borderColor: message.border_color.color}">
         <li v-bind:style="{backgroundColor: message.bg_color}">{{ message.content }}</li>
-        <li><img src="../../../assets/like.png" @click="clickPlusOne(message.id)"></li>
+        <li>
+          <span>赞({{message.clicks}})</span>
+          <img v-if="!liked && !disliked" src="../../../assets/dislike.png" @click="clickMinusOne(message.id)">
+          <img v-if="!liked && !disliked" src="../../../assets/like.png" @click="clickPlusOne(message.id)">
+          <img v-if="liked && !disliked" src="../../../assets/liked.png" @click="clickMinusOne(message.id)">
+          <img v-if="!liked && disliked" src="../../../assets/disliked.png" @click="clickPlusOne(message.id)">
+        </li>
       </div>
     </ul>
     <form action="">
@@ -19,8 +25,9 @@
     name: 'barrage',
     data () {
       return {
-        message_content: ''
-//        border_color: []
+        message_content: '',
+        liked: false,
+        disliked: false
       }
     },
     computed: {
@@ -32,20 +39,6 @@
     mounted () {
       this.$store.dispatch('connect')
       this.$store.dispatch('time_watcher')
-//      let that = this
-//      setInterval(function () {
-//        let now = Date.parse(new Date())
-//        let bc = that.border_color
-//        for (let i = 0; i < bc.length; i++) {
-//          let diff = (now - bc[i].time) / 1000
-//          if (diff > 5) {
-//            bc[i].color = 'rgb(255,255,255)'
-//          } else {
-//            let val = 51 * diff
-//            bc[i].color = 'rgb(' + val + ',' + val + ',255)'
-//          }
-//        }
-//      }, 10)
     },
 
     methods: {
@@ -67,7 +60,21 @@
       },
 
       clickPlusOne (id) {
+        if (this.disliked) {
+          this.disliked = false
+        } else if (!this.liked) {
+          this.liked = true
+        }
         this.$store.dispatch('click_plus', id)
+      },
+
+      clickMinusOne (id) {
+        if (this.liked) {
+          this.liked = false
+        } else if (!this.disliked) {
+          this.disliked = true
+        }
+        this.$store.dispatch('click_minus', id)
       }
     }
   }
@@ -84,6 +91,7 @@
   #messages li { padding: 5px 10px; word-wrap:break-word; word-break:break-all;min-height: 3%}
   #messages li:nth-child(odd) { background: #eee; }
   #messages { margin-bottom: 40px }
-  #messages img {width: 8%; float: right}
+  #messages li span {font-size: 50%;float: right}
+  #messages img {width: 8%; margin-right: 2%; float: right}
   #messages div {border: 1px solid}
 </style>

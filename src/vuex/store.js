@@ -81,8 +81,24 @@ const mutations = {
 
   CLICK_PLUS_ONE (state, id) {
     let index = _.findIndex(state.message_history, function (message) { return message.id === id })
-    let click = 255 - 2 * (++state.message_history[index].clicks < 200 ? state.message_history[index].clicks : 200)
-    state.message_history[index].bg_color = 'rgb(' + click + ',' + click + ',' + click + ')'
+    let bgColor = state.message_history[index].bg_color
+    let tmp = bgColor.substring(4, bgColor.length - 1).split(',')
+    let r = parseInt(tmp[0])
+    let g = parseInt(tmp[1])
+    let b = parseInt(tmp[2])
+    ++state.message_history[index].clicks
+    state.message_history[index].bg_color = 'rgb(' + (r - 2) + ',' + (g - 2) + ',' + (b - 2) + ')'
+  },
+
+  CLICK_MINUS_ONE (state, id) {
+    let index = _.findIndex(state.message_history, function (message) { return message.id === id })
+    let bgColor = state.message_history[index].bg_color
+    let tmp = bgColor.substring(4, bgColor.length - 1).split(',')
+    let r = parseInt(tmp[0])
+    let g = parseInt(tmp[1])
+    let b = parseInt(tmp[2])
+    --state.message_history[index].clicks
+    state.message_history[index].bg_color = 'rgb(' + (r + 2) + ',' + (g + 2) + ',' + (b + 2) + ')'
   },
 
   PUT_QUESTION (state, {nodeId, question}) {
@@ -215,6 +231,11 @@ const actions = {
   click_plus ({commit}, id) {
     socket.emit('client_click', id)
     commit('CLICK_PLUS_ONE', id)
+  },
+
+  click_minus ({commit}, id) {
+    socket.emit('client_dislike', id)
+    commit('CLICK_MINUS_ONE', id)
   },
 
   change_menu ({commit}, index) {
