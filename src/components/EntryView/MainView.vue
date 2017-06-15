@@ -23,7 +23,7 @@
           </el-tab-pane>
           <el-tab-pane :label="tabs[3].title" :name="tabs[3].name" v-if="selectedNodeId !== null">
             <div class="tabContent" v-if="menu_index === '3'">
-
+              <resource :selectedNodeId="selectedNodeId"></resource>
             </div>
           </el-tab-pane>
         </el-tabs>
@@ -43,6 +43,7 @@
   import Barrage from './MainView/Barrage.vue'
   import Homework from './MainView/Homework.vue'
   import Material from './MainView/Material.vue'
+  import Resource from './MainView/Resource.vue'
   import { mapGetters } from 'vuex'
   export default {
     name: 'main-view',
@@ -52,7 +53,8 @@
       MindMap,
       Barrage,
       Homework,
-      Material
+      Material,
+      Resource
     },
     data () {
       return {

@@ -192,6 +192,7 @@
 
   div.card div.button {
     float: right;
+    margin-right: 3%;
   }
 
   div.title {

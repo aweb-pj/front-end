@@ -21,18 +21,18 @@
     <div v-else-if="!isTeacher">
       <p>教师尚未上传课件</p>
     </div>
-    <div>
-      <el-upload
-          v-if="isTeacher"
-          class="upload-demo"
-          drag
-          :action="file_server_addr"
-          :on-success="afterSuccessing"	>
-        <i class="el-icon-upload"></i>
-        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-      </el-upload>
-    </div>
-    <el-dialog title="资源" v-model="dialogVisible" size="large">
+    <!--<div>-->
+      <!--<el-upload-->
+        <!--v-if="isTeacher"-->
+        <!--class="upload-demo"-->
+        <!--drag-->
+        <!--:action="file_server_addr"-->
+        <!--:on-success="afterSuccessing"	>-->
+        <!--<i class="el-icon-upload"></i>-->
+        <!--<div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>-->
+      <!--</el-upload>-->
+    <!--</div>-->
+    <el-dialog title="课件" v-model="dialogVisible" size="large">
       <iframe class="frame" :src="viewURL">
       </iframe>
     </el-dialog>
@@ -44,7 +44,7 @@
   import { mapGetters } from 'vuex'
 
   export default {
-    name: 'material',
+    name: 'resource',
     props: ['selectedNodeId'],
     stash: ['isTeacher'],
     components: {
@@ -73,9 +73,9 @@
       ...mapGetters([
         'cur_treeId'
       ]),
-      file_server_addr () {
-        return _.join([this.$stash.AWEB_SERVER_ADDR, 'tree', this.cur_treeId, 'node', this.selectedNodeId, 'material'], '/')
-      },
+//      file_server_addr () {
+//        return _.join([this.$stash.AWEB_SERVER_ADDR, 'tree', this.cur_treeId, 'node', this.selectedNodeId, 'material'], '/')
+//      },
       files: {
         get () {
           try {
@@ -99,9 +99,9 @@
       }
     },
     methods: {
-      afterSuccessing (response, file, fileList) {
-        this.$store.commit('PUT_FILE', {nodeId: this.selectedNodeId, file: this.cur_treeId + '_' + this.selectedNodeId + '_' + file.name.replace(/\s+/g, '_').toLowerCase()})
-      },
+//      afterSuccessing (response, file, fileList) {
+//        this.$store.commit('PUT_FILE', {nodeId: this.selectedNodeId, file: this.cur_treeId + '_' + this.selectedNodeId + '_' + file.name.replace(/\s+/g, '_').toLowerCase()})
+//      },
       deleteFile (index, event) {
         if (event.stopPropagation) {
           event.stopPropagation()

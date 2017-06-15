@@ -57,6 +57,11 @@
       <el-menu class="sidebar">
         <el-submenu index="1">
           <template slot="title"><i class="el-icon-setting"></i>资源</template>
+          <el-menu-item-group v-if="isTeacher">
+            <template slot="title">新增资源</template>
+            <el-menu-item index="1-1" @click="LinkVisible = true">链接</el-menu-item>
+            <el-menu-item index="1-2" @click="FileVisible = true">文件</el-menu-item>
+          </el-menu-item-group>
         </el-submenu>
       </el-menu>
     </div>
@@ -108,9 +113,35 @@
     <el-dialog title="创建思维导图" v-model="createMindVisible" size="tiny">
       <el-input v-model="newTreeId" placeholder="新导图id"></el-input>
       <span slot="footer" class="dialog-footer">
-      <el-button @click="closeMindDialog">取 消</el-button>
-      <el-button type="primary" @click="createMind">确 定</el-button>
-    </span>
+        <el-button @click="closeMindDialog">取 消</el-button>
+        <el-button type="primary" @click="createMind">确 定</el-button>
+      </span>
+    </el-dialog>
+
+    <el-dialog title="新增链接" v-model="LinkVisible" size="tiny">
+      <el-input v-model="link" placeholder="链接"></el-input>
+      <el-input class="description" v-model="linkDescription" placeholder="链接描述"></el-input>
+      <div slot="footer" class="dialog-footer">
+        <el-button>取 消</el-button>
+        <el-button type="primary">确 定</el-button>
+      </div>
+    </el-dialog>
+
+    <el-dialog title="新增文件" v-model="FileVisible" size="tiny">
+      <el-upload
+        v-if="isTeacher"
+        class="upload-demo"
+        drag
+        :action="file_server_addr"
+        :on-success="afterSuccessing"	>
+        <i class="el-icon-upload"></i>
+        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+      </el-upload>
+      <el-input class="description" v-model="fileDescription" placeholder="文件描述"></el-input>
+      <div slot="footer" class="dialog-footer">
+        <el-button>取 消</el-button>
+        <el-button type="primary">确 定</el-button>
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -158,7 +189,12 @@
           shortcut: {
             enable: false        // 是否启用快捷键
           }
-        }
+        },
+        LinkVisible: false,
+        FileVisible: false,
+        link: '',
+        linkDescription: '',
+        fileDescription: ''
       }
     },
     computed: {
@@ -166,7 +202,10 @@
         'menu_index',
         'treeIds',
         'cur_treeId'
-      ])
+      ]),
+      file_server_addr () {
+        return _.join([this.$stash.AWEB_SERVER_ADDR, 'tree', this.cur_treeId, 'node', this.selectedNodeId, 'material'], '/')
+      }
     },
 
     async mounted () {
@@ -364,6 +403,10 @@
           this.jm.show(mind)
         }
         this.canSave = true
+      },
+
+      afterSuccessing (response, file, fileList) {
+        this.$store.commit('PUT_FILE', {nodeId: this.selectedNodeId, file: this.cur_treeId + '_' + this.selectedNodeId + '_' + file.name.replace(/\s+/g, '_').toLowerCase()})
       }
     }
   }
@@ -371,5 +414,8 @@
 <style scoped>
   .sidebar {
     min-height: 100%;
+  }
+  .description {
+    margin-top: 5%;
   }
 </style>
