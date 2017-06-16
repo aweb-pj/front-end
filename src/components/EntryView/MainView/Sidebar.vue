@@ -10,7 +10,7 @@
               <template slot="title">切换思维导图</template>
               <el-menu-item v-for="(id,index) in treeIds" :key="id" :index="'1-3-'+(index+1)" @click="switch_mindmap(id)">{{id}}</el-menu-item>
             </el-submenu>
-            <el-menu-item index="1-2">思维导图截图</el-menu-item>
+            <el-menu-item index="1-2" @click="save_screenshot">思维导图截图</el-menu-item>
             <el-menu-item index="1-3" @click="save_mindmap" v-if="isTeacher">保存思维导图</el-menu-item>
             <el-menu-item index="1-4" @click="createMindVisible = true" v-if="isTeacher">创建思维导图</el-menu-item>
           </el-menu-item-group>
@@ -155,6 +155,7 @@
   import './MindMap/jsmind/style/jsmind.css'
   import jsMind from './MindMap/jsmind/js/jsmind.js'
   import jsMindDraggable from './MindMap/jsmind/js/jsmind.draggable.js'
+  import jsMindScreenshot from './MindMap/jsmind/js/jsmind.screenshot.js'
 
   export default {
     name: 'sidebar',
@@ -214,6 +215,7 @@
       let options = this.opt
       let mind = null
       jsMindDraggable(jsMind)
+      jsMindScreenshot(jsMind)
       try {
         let response = await this.$http.get(AWEB_SERVER_ADDR + '/tree')
         let treeIds = response.data
@@ -253,6 +255,14 @@
     },
 
     methods: {
+      save_screenshot () {
+        try {
+          this.jm.screenshot.shootDownload()
+        } catch (e) {
+          console.log(e)
+        }
+      },
+
       async toggleStatistics (newState) {
         let that = this
 

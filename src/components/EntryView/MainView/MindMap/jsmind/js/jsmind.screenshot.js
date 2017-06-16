@@ -6,7 +6,7 @@
  *   https://github.com/hizzgdev/jsmind/
  */
 
-export default (function(jsMind){
+module.exports = function(jsMind){
     'use strict';
     var $w = window;
 
@@ -348,4 +348,4 @@ export default (function(jsMind){
 
     jsMind.register_plugin(screenshot_plugin);
 
-})(window);
+}
