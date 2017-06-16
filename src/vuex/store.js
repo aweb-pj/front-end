@@ -207,6 +207,9 @@ const actions = {
     socket.on('server_click', (id) => {
       commit('CLICK_PLUS_ONE', id)
     })
+    socket.on('server_dislike', (id) => {
+      commit('CLICK_MINUS_ONE', id)
+    })
   },
 
   login ({commit}, {username, password, isTeacher}) {
