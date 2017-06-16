@@ -200,6 +200,8 @@ const actions = {
     })
     socket.on('server_message', (message) => {
       message.border_color = {color: 'rgb(0,0,255)', time: Date.parse(new Date())}
+      message.liked = false
+      message.disliked = false
       commit('PUT_MESSAGE', message)
     })
     socket.on('server_click', (id) => {

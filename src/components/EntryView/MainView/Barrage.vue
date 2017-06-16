@@ -5,10 +5,10 @@
         <li v-bind:style="{backgroundColor: message.bg_color}">{{ message.content }}</li>
         <li>
           <span>赞({{message.clicks}})</span>
-          <img v-if="!liked && !disliked" src="../../../assets/dislike.png" @click="clickMinusOne(message.id)">
-          <img v-if="!liked && !disliked" src="../../../assets/like.png" @click="clickPlusOne(message.id)">
-          <img v-if="liked && !disliked" src="../../../assets/liked.png" @click="clickMinusOne(message.id)">
-          <img v-if="!liked && disliked" src="../../../assets/disliked.png" @click="clickPlusOne(message.id)">
+          <img v-if="!message.liked && !message.disliked" src="../../../assets/dislike.png" @click="clickMinusOne(message)">
+          <img v-if="!message.liked && !message.disliked" src="../../../assets/like.png" @click="clickPlusOne(message)">
+          <img v-if="message.liked && !message.disliked" src="../../../assets/liked.png" @click="clickMinusOne(message)">
+          <img v-if="!message.liked && message.disliked" src="../../../assets/disliked.png" @click="clickPlusOne(message)">
         </li>
       </div>
     </ul>
@@ -59,20 +59,22 @@
         }
       },
 
-      clickPlusOne (id) {
-        if (this.disliked) {
-          this.disliked = false
-        } else if (!this.liked) {
-          this.liked = true
+      clickPlusOne (message) {
+        let id = message.id
+        if (message.disliked) {
+          message.disliked = false
+        } else if (!message.liked) {
+          message.liked = true
         }
         this.$store.dispatch('click_plus', id)
       },
 
-      clickMinusOne (id) {
-        if (this.liked) {
-          this.liked = false
-        } else if (!this.disliked) {
-          this.disliked = true
+      clickMinusOne (message) {
+        let id = message.id
+        if (message.liked) {
+          message.liked = false
+        } else if (!message.disliked) {
+          message.disliked = true
         }
         this.$store.dispatch('click_minus', id)
       }
