@@ -2,14 +2,12 @@
   <div class="wrapper">
     <el-row :gutter="5">
       <el-col :span="6" v-for="course in courses" :key="course">
-        <el-card>
+        <el-card class="custom-card">
           <div slot="header" class="clearfix">
             <span style="line-height: 36px;">{{course.name}}</span>
             <el-button type="text" class="enter-button">进入课程<i class="el-icon-arrow-right el-icon--right"></i></el-button>
           </div>
-          <span class="text item">
-            课程人数:{{course.students}}
-          </span>
+          <span class="text item">课程人数:{{course.students}}</span>
         </el-card>
       </el-col>
     </el-row>
@@ -23,6 +21,7 @@
           {name: '1', students: 2},
           {name: '1', students: 2},
           {name: '1', students: 2},
+          {name: '1', students: 2},
           {name: '1', students: 2}
         ]
       }
@@ -32,7 +31,7 @@
 <style scoped>
   .wrapper {
     width: 90%;
-    margin-top: 5%;
+    margin-top: 2%;
     margin-left: 5%;
   }
 
@@ -50,9 +49,12 @@
     content: "";
   }
   .clearfix:after {
-    clear: both
+    clear: both;
   }
   .enter-button {
     float: right;
+  }
+  .custom-card {
+    margin-top: 2%;
   }
 </style>
