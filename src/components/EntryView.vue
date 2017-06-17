@@ -1,6 +1,7 @@
 <template>
   <div>
-    <login-view v-if="!is_logged_in"></login-view>
+    <!--<login-view v-if="!is_logged_in"></login-view>-->
+    <course-view></course-view>
     <main-view v-if="is_logged_in"></main-view>
   </div>
 </template>
@@ -8,6 +9,7 @@
 <script>
   import LoginView from './EntryView/LoginView'
   import MainView from './EntryView/MainView'
+  import CourseView from './EntryView/CourseView'
 
   export default {
     data () {
@@ -17,7 +19,8 @@
     },
     components: {
       LoginView,
-      MainView
+      MainView,
+      CourseView
     },
     computed: {
       is_logged_in () {
