@@ -1,7 +1,7 @@
 <template>
   <div>
-    <!--<login-view v-if="!is_logged_in"></login-view>-->
-    <course-view></course-view>
+    <login-view v-if="!is_logged_in"></login-view>
+    <!--<course-view></course-view>-->
     <main-view v-if="is_logged_in"></main-view>
   </div>
 </template>
