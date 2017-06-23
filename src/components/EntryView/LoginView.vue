@@ -54,7 +54,7 @@
   import Vue from 'vue'
 
   export default {
-    stash: ['AWEB_SERVER_ADDR', 'courses', 'username'],
+    stash: ['AWEB_SERVER_ADDR', 'courses', 'username', 'selectable_courses'],
     data () {
       return {
         toggle: false,
@@ -101,6 +101,10 @@
               this.username = this.form.username
               response = await Vue.http.get(this.AWEB_SERVER_ADDR + '/user/' + this.username + '/course')
               this.courses = response.body
+              if (!this.isTeacher) {
+                response = await Vue.http.get(this.AWEB_SERVER_ADDR + '/user/' + this.username + '/selectable_courses')
+                this.selectable_courses = response.body
+              }
               this.$stash.is_logged_in = true
               this.toggle = false
             }

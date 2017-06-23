@@ -32,6 +32,7 @@ new Vue({
       select_course: false,
       courses: [],
       courseId: '',
+      selectable_courses: [],
       AWEB_SERVER_ADDR: 'https://aweb.jtwang.me',
       statVisible: false,
       showMindmap: true,

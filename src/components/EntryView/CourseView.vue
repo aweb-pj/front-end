@@ -1,6 +1,7 @@
 <template>
   <div class="wrapper">
     <el-button v-if="isTeacher" @click="dialogVisible = true">添加课程</el-button>
+    <el-button v-else @click="selectVisible = true">选课</el-button>
     <el-row :gutter="5">
       <el-col :span="6" v-for="course in courses" :key="course">
         <el-card class="custom-card">
@@ -22,21 +23,31 @@
         <el-button type="primary" @click="createCourse">确 定</el-button>
       </div>
     </el-dialog>
+
+    <el-dialog title="选择课程" v-model="selectVisible" size="tiny">
+      <div class="course-info" v-for="course in selectable_courses" :key="course">
+        {{course.courseId}}:{{course.courseName}}
+        <el-button type="text" style="float: right" @click="selectCourse(course.courseId)">选课</el-button>
+      </div>
+      <div class="alert" v-show="selectMessage !== ''">{{alertMessage}}</div>
+    </el-dialog>
   </div>
 </template>
 <script>
   import Vue from 'vue'
 
   export default {
-    stash: ['isTeacher', 'courses', 'username', 'AWEB_SERVER_ADDR', 'courseId', 'select_course'],
+    stash: ['isTeacher', 'courses', 'username', 'AWEB_SERVER_ADDR', 'courseId', 'select_course', 'selectable_courses'],
     data () {
       return {
         dialogVisible: false,
+        selectVisible: false,
         course: {
           courseId: '',
           courseName: ''
         },
-        alertMessage: ''
+        alertMessage: '',
+        selectMessage: ''
       }
     },
     methods: {
@@ -50,6 +61,7 @@
             let response = await Vue.http.get(this.AWEB_SERVER_ADDR + '/user/' + this.username + '/course')
             this.courses = response.body
             this.dialogVisible = false
+            this.alertMessage = ''
           } catch (e) {
             this.alertMessage = 'id或名称已存在！'
           }
@@ -58,6 +70,23 @@
       async enterCourse (courseId) {
         this.courseId = courseId
         this.select_course = true
+      },
+      async selectCourse (courseId) {
+        try {
+          let body = {username: this.username}
+          let response = await Vue.http.post(this.AWEB_SERVER_ADDR + '/course/' + courseId + '/select', body)
+          if (response.status === 200) {
+            this.$notify.info({
+              message: '选课成功'
+            })
+            let response = await Vue.http.get(this.AWEB_SERVER_ADDR + '/user/' + this.username + '/course')
+            this.courses = response.body
+            this.selectVisible = false
+            this.selectMessage = ''
+          }
+        } catch (e) {
+          this.selectMessage = '无法选课！'
+        }
       }
     }
   }
@@ -97,5 +126,8 @@
   .alert {
     float: left;
     color: red;
+  }
+  .course-info {
+    margin-bottom: 2%;
   }
 </style>
