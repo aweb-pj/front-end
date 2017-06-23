@@ -122,8 +122,8 @@
       <el-input v-model="link" placeholder="链接"></el-input>
       <el-input class="description" v-model="linkDescription" placeholder="链接描述"></el-input>
       <div slot="footer" class="dialog-footer">
-        <el-button>取 消</el-button>
-        <el-button type="primary">确 定</el-button>
+        <el-button @click="LinkVisible = false">取 消</el-button>
+        <el-button type="primary" @click="upload_link">确 定</el-button>
       </div>
     </el-dialog>
 
@@ -131,16 +131,19 @@
       <el-upload
         v-if="isTeacher"
         class="upload-demo"
+        ref="upload"
         drag
+        :auto-upload="false"
+        :data="fileData"
         :action="file_server_addr"
-        :on-success="afterSuccessing"	>
+        :on-success="afterSuccessing">
         <i class="el-icon-upload"></i>
         <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
       </el-upload>
-      <el-input class="description" v-model="fileDescription" placeholder="文件描述"></el-input>
+      <el-input class="description" v-model="fileData.description" placeholder="文件描述"></el-input>
       <div slot="footer" class="dialog-footer">
-        <el-button>取 消</el-button>
-        <el-button type="primary">确 定</el-button>
+        <el-button @click="FileVisible = false">取 消</el-button>
+        <el-button type="primary" @click="upload_file">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -195,7 +198,9 @@
         FileVisible: false,
         link: '',
         linkDescription: '',
-        fileDescription: ''
+        fileData: {
+          description: ''
+        }
       }
     },
     computed: {
@@ -205,7 +210,7 @@
         'cur_treeId'
       ]),
       file_server_addr () {
-        return _.join([this.$stash.AWEB_SERVER_ADDR, 'tree', this.cur_treeId, 'node', this.selectedNodeId, 'material'], '/')
+        return _.join([this.$stash.AWEB_SERVER_ADDR, 'tree', this.cur_treeId, 'node', this.selectedNodeId, 'resource', 'file'], '/')
       }
     },
 
@@ -418,8 +423,25 @@
         this.canSave = true
       },
 
-      afterSuccessing (response, file, fileList) {
-        this.$store.commit('PUT_FILE', {nodeId: this.selectedNodeId, file: this.cur_treeId + '_' + this.selectedNodeId + '_' + file.name.replace(/\s+/g, '_').toLowerCase()})
+      async afterSuccessing (response, file, fileList) {
+        await this.$store.dispatch('get_resource_file', this.selectedNodeId)
+        this.FileVisible = false
+      },
+
+      async upload_file () {
+        this.$refs.upload.submit()
+      },
+
+      async upload_link () {
+        if (this.link !== '' && this.linkDescription !== '') {
+          let body = {resource_link: {url: this.link, description: this.linkDescription}}
+          let response = await this.$http.post(this.$stash.AWEB_SERVER_ADDR + '/tree/' + this.cur_treeId + '/node/' + this.selectedNodeId + '/resource/link', body)
+          console.log(response)
+          if (response.status === 200) {
+            await this.$store.dispatch('get_resource_link', this.selectedNodeId)
+            this.LinkVisible = false
+          }
+        }
       }
     }
   }

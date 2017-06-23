@@ -34,7 +34,9 @@ const state = {
   displayBarrage: false,
   reports: [],
   treeIds: [],
-  cur_treeId: ''
+  cur_treeId: '',
+  resourceFile: {},
+  resourceLink: {}
 }
 
 const mutations = {
@@ -145,6 +147,22 @@ const mutations = {
       state.material[nodeId].push(file)
     }
   },
+  PUT_RESOURCE_FILE (state, {nodeId, file}) {
+    if (nodeId !== null) {
+      if (_.has(state.resourceFile, nodeId) === false) {
+        Vue.set(state.resourceFile, nodeId, [])
+      }
+      state.resourceFile[nodeId].push(file)
+    }
+  },
+  PUT_RESOURCE_LINK (state, {nodeId, file}) {
+    if (nodeId !== null) {
+      if (_.has(state.resourceLink, nodeId) === false) {
+        Vue.set(state.resourceLink, nodeId, [])
+      }
+      state.resourceLink[nodeId].push(file)
+    }
+  },
 
   CLEAN_FILES (state, nodeId) {
     if (nodeId !== null) {
@@ -157,8 +175,36 @@ const mutations = {
       }
     }
   },
+  CLEAN_RESOURCE_FILES (state, nodeId) {
+    if (nodeId !== null) {
+      if (_.has(state.resourceFile, nodeId) === false) {
+        Vue.set(state.resourceFile, nodeId, [])
+      } else {
+        while (state.resourceFile[nodeId].length !== 0) {
+          state.resourceFile[nodeId].pop()
+        }
+      }
+    }
+  },
+  CLEAN_RESOURCE_LINKS (state, nodeId) {
+    if (nodeId !== null) {
+      if (_.has(state.resourceLink, nodeId) === false) {
+        Vue.set(state.resourceLink, nodeId, [])
+      } else {
+        while (state.resourceLink[nodeId].length !== 0) {
+          state.resourceLink[nodeId].pop()
+        }
+      }
+    }
+  },
   DELETE_FILE (state, {nodeId, index}) {
     state.material[nodeId].splice(index, 1)
+  },
+  DELETE_RESOURCE_FILE (state, {nodeId, index}) {
+    state.resourceFile[nodeId].splice(index, 1)
+  },
+  DELETE_RESOURCE_LINK (state, {nodeId, index}) {
+    state.resourceLink[nodeId].splice(index, 1)
   },
   DISPLAY_BARRAGE (state, newState) {
     state.displayBarrage = newState
@@ -309,6 +355,30 @@ const actions = {
       commit('CLEAN_FILES', nodeId)
     }
   },
+  async get_resource_file ({commit, state}, nodeId) {
+    try {
+      let response = await Vue.http.get(AWEB_SERVER_ADDR + '/tree/' + state.cur_treeId + '/node/' + nodeId + '/resource/file')
+      let resourceFiles = response.data
+      commit('CLEAN_RESOURCE_FILES', nodeId)
+      _.forEach(resourceFiles, function (file) {
+        commit('PUT_RESOURCE_FILE', {nodeId, file})
+      })
+    } catch (error) {
+      commit('CLEAN_RESOURCE_FILES', nodeId)
+    }
+  },
+  async get_resource_link ({commit, state}, nodeId) {
+    try {
+      let response = await Vue.http.get(AWEB_SERVER_ADDR + '/tree/' + state.cur_treeId + '/node/' + nodeId + '/resource/link')
+      let resourceLinks = response.data
+      commit('CLEAN_RESOURCE_LINKS', nodeId)
+      _.forEach(resourceLinks, function (file) {
+        commit('PUT_RESOURCE_LINK', {nodeId, file})
+      })
+    } catch (error) {
+      commit('CLEAN_RESOURCE_LINKS', nodeId)
+    }
+  },
   async update_files ({commit, state}, {nodeId, files}) {
     try {
       await Vue.http.put(AWEB_SERVER_ADDR + '/tree/' + state.cur_treeId + '/node/' + nodeId + '/material', {material: files})
@@ -320,10 +390,51 @@ const actions = {
       console.log(error)
     }
   },
+  async update_resource_files ({commit, state}, {nodeId, files}) {
+    try {
+      await Vue.http.put(AWEB_SERVER_ADDR + '/tree/' + state.cur_treeId + '/node/' + nodeId + '/resource/file', {resource_file: files})
+      commit('CLEAN_RESOURCE_FILES', nodeId)
+      _.forEach(files, function (file) {
+        commit('PUT_RESOURCE_FILE', {nodeId, file})
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  },
+  async update_resource_links ({commit, state}, {nodeId, files}) {
+    try {
+      await Vue.http.put(AWEB_SERVER_ADDR + '/tree/' + state.cur_treeId + '/node/' + nodeId + '/resource/link', {resource_link: files})
+      commit('CLEAN_RESOURCE_LINKS', nodeId)
+      _.forEach(files, function (file) {
+        commit('PUT_RESOURCE_LINK', {nodeId, file})
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  },
   async delete_file ({commit, state}, {nodeId, index}) {
     try {
       await Vue.http.delete(AWEB_SERVER_ADDR + '/tree/' + state.cur_treeId + '/node/' + nodeId + '/material/' + state.material[nodeId][index])
       commit('DELETE_FILE', {nodeId, index})
+    } catch (error) {
+      console.log(error)
+    }
+  },
+  async delete_resource_file ({commit, state}, {nodeId, index}) {
+    try {
+      let url = state.resourceFile[nodeId][index].url
+      let tmp = url.split('/')
+      let filename = tmp[tmp.length - 1]
+      await Vue.http.delete(AWEB_SERVER_ADDR + '/tree/' + state.cur_treeId + '/node/' + nodeId + '/resource/file/' + filename)
+      commit('DELETE_RESOURCE_FILE', {nodeId, index})
+    } catch (error) {
+      console.log(error)
+    }
+  },
+  async delete_resource_link ({commit, state}, {nodeId, index}) {
+    try {
+      await Vue.http.post(AWEB_SERVER_ADDR + '/tree/' + state.cur_treeId + '/node/' + nodeId + '/resource/link/delete', state.resourceLink[nodeId][index])
+      commit('DELETE_RESOURCE_LINK', {nodeId, index})
     } catch (error) {
       console.log(error)
     }

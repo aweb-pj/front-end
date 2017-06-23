@@ -9,14 +9,6 @@
           </el-card>
         </div>
       </draggable>
-      <div v-else>
-        <div @click="openFrame(file)" v-for="(file, index) in files" :key="file">
-          <el-card>
-            <span>{{file}}</span>
-            <el-button @click="deleteFile(index, $event)" v-if="isTeacher" style="float: right">删除</el-button>
-          </el-card>
-        </div>
-      </div>
     </div>
     <div v-else-if="!isTeacher">
       <!--<p>教师尚未上传课件</p>-->

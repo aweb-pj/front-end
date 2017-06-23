@@ -9,7 +9,7 @@
             <span style="line-height: 36px;">{{course.courseId}}:{{course.courseName}}</span>
             <el-button type="text" class="enter-button" @click="enterCourse(course.courseId)">进入课程<i class="el-icon-arrow-right el-icon--right"></i></el-button>
           </div>
-          <span class="text item">课程人数:{{course.stakeholders.length}}</span>
+          <span class="text item">课程人数:{{course.stakeholders.length-1}}</span>
         </el-card>
       </el-col>
     </el-row>
@@ -62,6 +62,8 @@
             this.courses = response.body
             this.dialogVisible = false
             this.alertMessage = ''
+            this.course.courseId = ''
+            this.course.courseName = ''
           } catch (e) {
             this.alertMessage = 'id或名称已存在！'
           }
@@ -128,6 +130,6 @@
     color: red;
   }
   .course-info {
-    margin-bottom: 2%;
+    margin-bottom: 5%;
   }
 </style>
