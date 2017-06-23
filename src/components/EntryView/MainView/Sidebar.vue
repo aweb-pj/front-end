@@ -11,7 +11,7 @@
               <el-menu-item v-for="(id,index) in treeIds" :key="id" :index="'1-3-'+(index+1)" @click="switch_mindmap(id)">{{id}}</el-menu-item>
             </el-submenu>
             <el-menu-item index="1-2" @click="save_screenshot">思维导图截图</el-menu-item>
-            <el-menu-item index="1-3" @click="save_mindmap" v-if="isTeacher">保存思维导图</el-menu-item>
+            <el-menu-item index="1-3" @click="save_mindmap(true)" v-if="isTeacher">保存思维导图</el-menu-item>
             <el-menu-item index="1-4" @click="createMindVisible = true" v-if="isTeacher">创建思维导图</el-menu-item>
           </el-menu-item-group>
           <el-menu-item-group v-if="isTeacher">
@@ -159,7 +159,7 @@
 
   export default {
     name: 'sidebar',
-    stash: ['jm', 'nodeColors', 'hsv2rgb', 'num2hsv', 'isTeacher', 'statVisible', 'showMindmap'],
+    stash: ['jm', 'nodeColors', 'hsv2rgb', 'num2hsv', 'isTeacher', 'statVisible', 'showMindmap', 'courseId'],
     props: ['selectedNodeId'],
     data () {
       return {
@@ -217,7 +217,7 @@
       jsMindDraggable(jsMind)
       jsMindScreenshot(jsMind)
       try {
-        let response = await this.$http.get(AWEB_SERVER_ADDR + '/tree')
+        let response = await this.$http.get(AWEB_SERVER_ADDR + '/course/' + this.courseId + '/tree')
         let treeIds = response.data
         _.remove(treeIds, function (e) { return e === '' })
         if (treeIds.length === 0) {
@@ -376,7 +376,7 @@
             }
           })
           let treeData = that.statVisible ? jm.get_data() : that.jm.get_data()
-          await (that.$http.post(_.join([that.$stash.AWEB_SERVER_ADDR, 'tree'], '/'), {treeId: this.cur_treeId, nodesKeys: _.keys(that.jm.mind.nodes), data: treeData}))
+          await (that.$http.post(_.join([that.$stash.AWEB_SERVER_ADDR, 'course', that.courseId, 'tree'], '/'), {courseId: that.courseId, treeId: this.cur_treeId, nodesKeys: _.keys(that.jm.mind.nodes), data: treeData}))
           if (shouldAlert) {
             this.$alert('保存成功!', '提示', {
               confirmButtonText: '确定',

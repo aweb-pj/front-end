@@ -17,7 +17,7 @@
         <el-radio class="radio" v-model="radio" label="1">教师</el-radio>
         <el-radio class="radio" v-model="radio" label="2">学生</el-radio>
       </div>
-
+      <div class="alert" v-show="loginAlert !== ''">{{loginAlert}}</div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="close_login_box()">取消</el-button>
         <el-button type="primary" @click="login()">确认</el-button>
@@ -51,7 +51,10 @@
 
 
 <script>
+  import Vue from 'vue'
+
   export default {
+    stash: ['AWEB_SERVER_ADDR', 'courses', 'username'],
     data () {
       return {
         toggle: false,
@@ -67,7 +70,8 @@
           password: '',
           reInput: ''
         },
-        registerAlert: ''
+        registerAlert: '',
+        loginAlert: ''
       }
     },
     methods: {
@@ -79,20 +83,54 @@
         this.toggle = false
       },
 
-      login () {
+      async login () {
         this.$stash.username = this.form.username
         this.$stash.isTeacher = this.radio === '1'
-        this.$stash.is_logged_in = true
 //        this.$store.dispatch('login', {username: this.form.username, password: this.form.password, isTeacher: this.radio === '1'})
-        this.toggle = false
+        if (this.form.username === '' || this.form.password === '') {
+          this.loginAlert = '用户名密码不得为空！'
+        } else {
+          try {
+            let body = {
+              username: this.form.username,
+              password: this.form.password,
+              type: this.radio === '1' ? 'teacher' : 'student'
+            }
+            let response = await Vue.http.post(this.AWEB_SERVER_ADDR + '/login', body)
+            if (response.status === 200) {
+              this.username = this.form.username
+              response = await Vue.http.get(this.AWEB_SERVER_ADDR + '/user/' + this.username + '/course')
+              this.courses = response.body
+              this.$stash.is_logged_in = true
+              this.toggle = false
+            }
+          } catch (e) {
+            this.loginAlert = '用户名或密码错误！'
+          }
+        }
       },
 
-      register () {
+      async register () {
         if (this.registerForm.password !== this.registerForm.reInput) {
           this.registerAlert = '两次密码不一致！'
         } else {
-          this.registerAlert = ''
-          this.registerVisible = false
+          try {
+            let body = {
+              username: this.registerForm.username,
+              password: this.registerForm.password,
+              type: this.radio === '1' ? 'teacher' : 'student'
+            }
+            let response = await Vue.http.post(this.AWEB_SERVER_ADDR + '/register', body)
+            if (response.status === 200) {
+              this.registerAlert = ''
+              this.registerVisible = false
+              this.$notify.info({
+                message: '注册成功'
+              })
+            }
+          } catch (e) {
+            this.registerAlert = '用户名已存在！'
+          }
         }
       }
     }

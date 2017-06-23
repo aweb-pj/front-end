@@ -1,8 +1,8 @@
 <template>
   <div>
     <login-view v-if="!is_logged_in"></login-view>
-    <!--<course-view></course-view>-->
-    <main-view v-if="is_logged_in"></main-view>
+    <course-view v-if="is_logged_in && !select_course"></course-view>
+    <main-view v-if="select_course"></main-view>
   </div>
 </template>
 
@@ -25,6 +25,9 @@
     computed: {
       is_logged_in () {
         return this.$stash.is_logged_in
+      },
+      select_course () {
+        return this.$stash.select_course
       }
     },
     name: 'entry-view'
