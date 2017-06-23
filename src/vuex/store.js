@@ -433,7 +433,9 @@ const actions = {
   },
   async delete_resource_link ({commit, state}, {nodeId, index}) {
     try {
-      await Vue.http.post(AWEB_SERVER_ADDR + '/tree/' + state.cur_treeId + '/node/' + nodeId + '/resource/link/delete', state.resourceLink[nodeId][index])
+      let body = {resource_link: state.resourceLink[nodeId][index]}
+      console.log(body)
+      await Vue.http.post(AWEB_SERVER_ADDR + '/tree/' + state.cur_treeId + '/node/' + nodeId + '/resource/link/delete', body)
       commit('DELETE_RESOURCE_LINK', {nodeId, index})
     } catch (error) {
       console.log(error)

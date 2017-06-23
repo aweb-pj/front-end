@@ -10,6 +10,14 @@
           </el-card>
         </div>
       </draggable>
+      <div v-else>
+        <div @click="check_file(file)" v-for="(file, index) in files" :key="file">
+          <el-card>
+            <span>{{file.url}}:{{file.description}}</span>
+            <el-button @click="deleteFile(index, $event)" v-if="isTeacher" style="float: right">删除</el-button>
+          </el-card>
+        </div>
+      </div>
     </div>
     <div v-if="links !== undefined && links.length > 0">
       <h4>链接</h4>
@@ -21,6 +29,14 @@
           </el-card>
         </div>
       </draggable>
+      <div v-else>
+        <div @click="check_link(file)" v-for="(file, index) in links" :key="file">
+          <el-card>
+            <span>{{file.url}}:{{file.description}}</span>
+            <el-button @click="deleteLink(index, $event)" v-if="isTeacher" style="float: right">删除</el-button>
+          </el-card>
+        </div>
+      </div>
     </div>
   </div>
 </template>
