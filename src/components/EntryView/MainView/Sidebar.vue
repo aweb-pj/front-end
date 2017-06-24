@@ -331,6 +331,7 @@
           this.$notify.info({
             message: '退出显示正确率状态，思维导图编辑功能已启用'
           })
+          that.nodeColors = {}
           that.canSave = true
         }
       },
@@ -365,22 +366,24 @@
       },
 
       async save_mindmap (shouldAlert = true) {
+        this.canSave = false
         let that = this
         if (that.statVisible) {
           that.toggleStatistics(false)
         }
 
         try {
-          let jm = _.cloneDeep(that.jm)
-          if (!jm.get_editable()) {
-            jm.enable_edit()
-          }
-          _.forEach(that.nodeColors, (nodeColor, key) => {
-            if (_.has(nodeColor, 'previous')) {
-              jm.set_node_color(jm.mind.nodes[key].id, nodeColor.previous, null)
-            }
-          })
-          let treeData = that.statVisible ? jm.get_data() : that.jm.get_data()
+//          let jm = _.cloneDeep(that.jm)
+//          if (!jm.get_editable()) {
+//            jm.enable_edit()
+//          }
+//          _.forEach(that.nodeColors, (nodeColor, key) => {
+//            if (_.has(nodeColor, 'previous')) {
+//              jm.set_node_color(jm.mind.nodes[key].id, nodeColor.previous, null)
+//            }
+//          })
+//          let treeData = that.statVisible ? jm.get_data() : that.jm.get_data()
+          let treeData = that.jm.get_data()
           await (that.$http.post(_.join([that.$stash.AWEB_SERVER_ADDR, 'course', that.courseId, 'tree'], '/'), {courseId: that.courseId, treeId: this.cur_treeId, nodesKeys: _.keys(that.jm.mind.nodes), data: treeData}))
           if (shouldAlert) {
             this.$alert('保存成功!', '提示', {
@@ -392,6 +395,7 @@
         } catch (e) {
           console.log(e)
         }
+        that.canSave = true
       },
 
       closeMindDialog () {
