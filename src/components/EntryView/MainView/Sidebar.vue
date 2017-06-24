@@ -11,7 +11,7 @@
               <el-menu-item v-for="(id,index) in treeIds" :key="id" :index="'1-3-'+(index+1)" @click="switch_mindmap(id)">{{id}}</el-menu-item>
             </el-submenu>
             <el-menu-item index="1-2" @click="save_screenshot">思维导图截图</el-menu-item>
-            <el-menu-item index="1-3" @click="save_mindmap(true)" v-if="isTeacher">保存思维导图</el-menu-item>
+            <!--<el-menu-item index="1-3" @click="save_mindmap(true)" v-if="isTeacher">保存思维导图</el-menu-item>-->
             <el-menu-item index="1-4" @click="createMindVisible = true" v-if="isTeacher">创建思维导图</el-menu-item>
           </el-menu-item-group>
           <el-menu-item-group v-if="isTeacher">
