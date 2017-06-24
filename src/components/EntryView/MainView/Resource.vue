@@ -5,7 +5,7 @@
       <draggable v-model="files" v-if="isTeacher">
         <div @click="check_file(file)" v-for="(file, index) in files" :key="file">
           <el-card>
-            <span>{{file.url}}:{{file.description}}</span>
+            <span>{{file.url.split('/')[file.url.split('/').length-1]}}:{{file.description}}</span>
             <el-button @click="deleteFile(index, $event)" style="float: right">删除</el-button>
           </el-card>
         </div>
@@ -13,7 +13,7 @@
       <div v-else>
         <div @click="check_file(file)" v-for="(file, index) in files" :key="file">
           <el-card>
-            <span>{{file.url}}:{{file.description}}</span>
+            <span>{{file.url.split('/')[file.url.split('/').length-1]}}:{{file.description}}</span>
             <el-button @click="deleteFile(index, $event)" v-if="isTeacher" style="float: right">删除</el-button>
           </el-card>
         </div>
