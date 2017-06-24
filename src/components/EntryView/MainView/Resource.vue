@@ -3,17 +3,17 @@
     <div v-if="files !== undefined && files.length > 0">
       <h4>文件</h4>
       <draggable v-model="files" v-if="isTeacher">
-        <div @click="check_file(file)" v-for="(file, index) in files" :key="file">
+        <div v-for="(file, index) in files" :key="file">
           <el-card>
-            <span>{{file.url.split('/')[file.url.split('/').length-1]}}:{{file.description}}</span>
+            <a v-bind:href="file.url">{{file.description}}</a>
             <el-button @click="deleteFile(index, $event)" style="float: right">删除</el-button>
           </el-card>
         </div>
       </draggable>
       <div v-else>
-        <div @click="check_file(file)" v-for="(file, index) in files" :key="file">
+        <div v-for="(file, index) in files" :key="file">
           <el-card>
-            <span>{{file.url.split('/')[file.url.split('/').length-1]}}:{{file.description}}</span>
+            <a v-bind:href="file.url">{{file.description}}</a>
             <el-button @click="deleteFile(index, $event)" v-if="isTeacher" style="float: right">删除</el-button>
           </el-card>
         </div>
@@ -22,17 +22,17 @@
     <div v-if="links !== undefined && links.length > 0">
       <h4>链接</h4>
       <draggable v-model="links" v-if="isTeacher">
-        <div @click="check_link(file)" v-for="(file, index) in links" :key="file">
+        <div v-for="(file, index) in links" :key="file">
           <el-card>
-            <span>{{file.url}}:{{file.description}}</span>
+            <a v-bind:href="file.url">{{file.description}}</a>
             <el-button @click="deleteLink(index, $event)" style="float: right">删除</el-button>
           </el-card>
         </div>
       </draggable>
       <div v-else>
-        <div @click="check_link(file)" v-for="(file, index) in links" :key="file">
+        <div v-for="(file, index) in links" :key="file">
           <el-card>
-            <span>{{file.url}}:{{file.description}}</span>
+            <a v-bind:href="file.url">{{file.description}}</a>
             <el-button @click="deleteLink(index, $event)" v-if="isTeacher" style="float: right">删除</el-button>
           </el-card>
         </div>
@@ -130,16 +130,6 @@
           event.cancelBubble = true
         }
         this.$store.dispatch('delete_resource_link', {nodeId: this.selectedNodeId, index: index})
-      },
-      async check_file (file) {
-        let url = file.url
-        let tmp = url.split('/')
-        let filename = tmp[tmp.length - 1]
-        let fileAddr = this.AWEB_SERVER_ADDR + '/tree/' + this.cur_treeId + '/node/' + this.selectedNodeId + '/resource/file/' + filename
-        window.location.href = fileAddr
-      },
-      check_link (file) {
-        window.location.href = file.url
       }
     }
   }
