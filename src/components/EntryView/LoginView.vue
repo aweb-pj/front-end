@@ -1,7 +1,16 @@
 <template>
   <div id="register">
+    <div class="middle">
+      <h1>混合式教学在线系统</h1>
+    </div>
+    <div class="minor">
+      <span>思维导图·个性化·主动学习·讨论式教学</span>
+    </div>
     <el-button  @click="open_login_box()" id="login_button">登录</el-button>
     <el-button  @click="registerVisible = true" id="register_button">注册</el-button>
+    <div class="footer">
+      &copy; 复旦大学
+    </div>
 
     <el-dialog v-model="toggle">
       <el-form :model="form">
@@ -143,15 +152,40 @@
 
 
 <style scoped>
-  #login_button {
+  .middle {
     position  : absolute;
-    top       : 50%;
+    width: 30%;
+    top: 30%;
+    left: 35%;
+    text-align: center;
+  }
+  .minor {
+    position  : absolute;
+    top: 40%;
+    width: 25%;
+    left: 70%;
+    text-align: center;
+    color: gray;
+  }
+  .footer {
+    position: absolute;
+    height: 5%;
+    width: 20%;
+    left: 40%;
+    top: 95%;
+    text-align: center;
+  }
+  #login_button {
+    width: 6%;
+    position  : absolute;
+    top       : 52%;
     left      : 47%;
     transform : translate(-50%,-50%);
   }
   #register_button {
+    width: 6%;
     position  : absolute;
-    top       : 50%;
+    top       : 52%;
     left      : 53%;
     transform : translate(-50%,-50%);
   }
